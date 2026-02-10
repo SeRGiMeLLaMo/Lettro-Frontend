@@ -3,17 +3,19 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Story from "./pages/Story";
 import Search from "./pages/Search";
+import CreateStory from "./pages/CreateStory";
 
 
 export default function App() {
 return (
 <Router>
-<div className="min-h-screen bg-gray-100 text-gray-900">
+<div className="min-h-screen bg-l3-bg text-white">
 <Navbar />
 <Routes>
 <Route path="/" element={<Home />} />
 <Route path="/story/:id" element={<Story />} />
 <Route path="/search" element={<Search />} />
+<Route path="/create-story" element={<CreateStory />} />
 </Routes>
 </div>
 </Router>

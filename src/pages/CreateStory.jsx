@@ -1,5 +1,11 @@
+// useState → para guardar datos del formulario en memoria
 import { useState } from "react";
 
+// axios → para hacer peticiones HTTP a Laravel
+import axios from "axios";
+
+
+// Lista temporal de géneros (más adelante lo ideal es traerlos desde Laravel)
 const genresList = [
   { id: 1, name: "Fantasía" },
   { id: 2, name: "Ciencia ficción" },
@@ -14,30 +20,53 @@ const genresList = [
 ];
 
 export default function CreateStory() {
+
+  // Estado principal del formulario
+  // Aquí guardamos lo que el usuario escribe
   const [form, setForm] = useState({
     title: "",
     description: "",
     cover_image: null,
-    genres: [],
+    genres: [], // aquí guardamos varios géneros seleccionados
   });
 
+  // Estado para mostrar loading mientras se envía
+  const [loading, setLoading] = useState(false);
+
+  // Estado para mostrar errores que vienen de Laravel
+  const [errors, setErrors] = useState(null);
+
+
+  // Se ejecuta cuando el usuario escribe en título o descripción
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm({ 
+      ...form, // mantiene lo que ya había
+      [e.target.name]: e.target.value // actualiza solo el campo cambiado
+    });
   };
 
+
+  // Se ejecuta cuando el usuario selecciona una imagen
   const handleImage = (e) => {
-    setForm({ ...form, cover_image: e.target.files[0] });
+    setForm({ 
+      ...form, 
+      cover_image: e.target.files[0] // guardamos el archivo
+    });
   };
 
-  const toggleGenre = (id) => {
-    const exists = form.genres.includes(id);
 
-    if (exists) {
+  // Función para seleccionar o deseleccionar géneros
+  const toggleGenre = (id) => {
+
+    // Si ya está seleccionado lo quitamos
+    if (form.genres.includes(id)) {
       setForm({
         ...form,
         genres: form.genres.filter((g) => g !== id),
       });
-    } else {
+    } 
+    // Si no está seleccionado lo añadimos
+    else {
       setForm({
         ...form,
         genres: [...form.genres, id],
@@ -45,33 +74,93 @@ export default function CreateStory() {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
 
+  // Se ejecuta cuando el usuario envía el formulario
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // evita que la página se recargue
+
+    setLoading(true);
+    setErrors(null);
+
+    // FormData se usa porque estamos enviando archivos (imagen)
     const data = new FormData();
+
+    // Añadimos los campos básicos
     data.append("title", form.title);
     data.append("description", form.description);
-    data.append("cover_image", form.cover_image);
 
+    // Añadimos la imagen solo si existe
+    if (form.cover_image) {
+      data.append("cover_image", form.cover_image);
+    }
+
+    // Añadimos varios géneros como array
     form.genres.forEach((id) => {
       data.append("genre_id[]", id);
     });
 
-    console.log("Datos listos para enviar a Laravel:", form);
+    try {
 
-    // Luego aquí harías:
-    // axios.post("http://localhost:8000/api/stories", data)
+      // Petición POST a Laravel
+      const response = await axios.post(
+        "http://localhost:8000/api/stories",
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "Accept": "application/json",
+          },
+        }
+      );
+
+      // Si todo sale bien
+      alert("Story creada correctamente 🎉");
+
+      // Reseteamos formulario
+      setForm({
+        title: "",
+        description: "",
+        cover_image: null,
+        genres: [],
+      });
+
+      console.log(response.data);
+
+    } catch (error) {
+
+      // Si Laravel devuelve errores de validación
+      if (error.response) {
+        setErrors(error.response.data.errors);
+      } else {
+        console.error(error);
+      }
+
+    }
+
+    setLoading(false);
   };
+
 
   return (
     <div className="min-h-screen bg-l3-bg text-white flex justify-center p-8">
       <div className="bg-l3-card p-8 rounded-2xl w-full max-w-2xl border border-purple-900/30 shadow-xl">
+
         <h1 className="text-3xl font-bold text-l3-neon mb-6 text-center">
           Crear nueva Story
         </h1>
 
+        {/* Mostrar errores si existen */}
+        {errors && (
+          <div className="bg-red-500/20 border border-red-500 p-3 rounded mb-4">
+            {Object.values(errors).map((err, i) => (
+              <p key={i} className="text-red-400 text-sm">{err}</p>
+            ))}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* TITLE */}
+
+          {/* TÍTULO */}
           <div>
             <label className="block mb-1 text-gray-300">Título</label>
             <input
@@ -80,12 +169,11 @@ export default function CreateStory() {
               value={form.title}
               onChange={handleChange}
               className="w-full p-3 rounded bg-gray-900 border border-purple-900/30 text-white"
-              placeholder="Ej: El reino de las sombras"
               required
             />
           </div>
 
-          {/* DESCRIPTION */}
+          {/* DESCRIPCIÓN */}
           <div>
             <label className="block mb-1 text-gray-300">Descripción</label>
             <textarea
@@ -93,12 +181,11 @@ export default function CreateStory() {
               value={form.description}
               onChange={handleChange}
               className="w-full p-3 rounded bg-gray-900 border border-purple-900/30 text-white h-32"
-              placeholder="Describe tu historia..."
               required
             />
           </div>
 
-          {/* COVER IMAGE */}
+          {/* IMAGEN */}
           <div>
             <label className="block mb-1 text-gray-300">
               Imagen de portada
@@ -108,11 +195,10 @@ export default function CreateStory() {
               accept="image/*"
               onChange={handleImage}
               className="w-full text-gray-300"
-              required
             />
           </div>
 
-          {/* GENRES CHECKBOX */}
+          {/* GÉNEROS */}
           <div>
             <label className="block mb-2 text-gray-300">
               Géneros (puedes elegir varios)
@@ -122,7 +208,7 @@ export default function CreateStory() {
               {genresList.map((genre) => (
                 <label
                   key={genre.id}
-                  className={`flex items-center gap-2 p-2 rounded cursor-pointer border 
+                  className={`flex items-center gap-2 p-2 rounded cursor-pointer border transition
                   ${
                     form.genres.includes(genre.id)
                       ? "bg-purple-700/30 border-purple-500"
@@ -141,13 +227,15 @@ export default function CreateStory() {
             </div>
           </div>
 
-          {/* BUTTON */}
+          {/* BOTÓN */}
           <button
             type="submit"
-            className="w-full bg-l3-purple text-white py-3 rounded-xl hover:bg-l3-light transition shadow-lg shadow-purple-500/20"
+            disabled={loading}
+            className="w-full bg-l3-purple text-white py-3 rounded-xl hover:bg-l3-light transition shadow-lg shadow-purple-500/20 disabled:opacity-50"
           >
-            Crear Story
+            {loading ? "Creando..." : "Crear Story"}
           </button>
+
         </form>
       </div>
     </div>

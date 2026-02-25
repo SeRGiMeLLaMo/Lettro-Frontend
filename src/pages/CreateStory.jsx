@@ -1,5 +1,6 @@
 // useState → para guardar datos del formulario en memoria
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // axios → para hacer peticiones HTTP a Laravel
 import axios from "axios";
@@ -20,6 +21,8 @@ const genresList = [
 ];
 
 export default function CreateStory() {
+
+  const navigate = useNavigate();
 
   // Estado principal del formulario
   // Aquí guardamos lo que el usuario escribe
@@ -116,15 +119,11 @@ export default function CreateStory() {
       // Si todo sale bien
       alert("Story creada correctamente 🎉");
 
-      // Reseteamos formulario
-      setForm({
-        title: "",
-        description: "",
-        cover_image: null,
-        genres: [],
-      });
-
+      // Opcional: podemos usar la respuesta para algo si hace falta
       console.log(response.data);
+
+      // Redirigir a la Home, donde se listan las historias recientes
+      navigate("/");
 
     } catch (error) {
 

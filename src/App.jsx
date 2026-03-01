@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Story from "./pages/Story";
 import Search from "./pages/Search";
 import CreateStory from "./pages/CreateStory";
+import Profile from "./pages/Profile";
 
 
 export default function App() {
@@ -16,6 +17,7 @@ return (
 <Route path="/story/:id" element={<Story />} />
 <Route path="/search" element={<Search />} />
 <Route path="/create-story" element={<CreateStory />} />
+<Route path="/profile/:id" element={<Profile />} />
 </Routes>
 </div>
 </Router>

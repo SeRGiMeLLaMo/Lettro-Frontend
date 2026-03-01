@@ -10,7 +10,7 @@ import Profile from "./pages/Profile";
 export default function App() {
 return (
 <Router>
-<div className="min-h-screen bg-l3-bg text-white">
+<div className="min-h-screen bg-l3-bg text-l3-ink">
 <Navbar />
 <Routes>
 <Route path="/" element={<Home />} />

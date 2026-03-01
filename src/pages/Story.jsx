@@ -51,22 +51,44 @@ export default function Story() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-4xl font-bold mb-2 text-l3-neon">
-        {story.title}
-      </h1>
+    <div className="max-w-5xl mx-auto p-6">
+      <div className="flex flex-col md:flex-row gap-6">
+        {/* Portada */}
+        <div className="w-full max-w-md md:w-[480px] mx-auto md:mx-0">
+          <div className="w-full aspect-[2/3] rounded-2xl overflow-hidden shadow-md border border-l3-border bg-gradient-to-br from-l3-gold/40 to-l3-brown/30 flex items-center justify-center">
+            {story.cover_image ? (
+              <img
+                src={`http://localhost:8000/storage/${story.cover_image}`}
+                alt={story.title}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-sm text-l3-muted px-4 text-center">
+                Esta historia aún no tiene portada.
+              </span>
+            )}
+          </div>
+        </div>
 
-      <p className="text-gray-400 mb-4">
-        {story.author?.name ? `Por ${story.author.name}` : "Autor desconocido"}
-      </p>
+        {/* Información principal */}
+        <div className="flex-1">
+          <h1 className="text-3xl md:text-4xl font-bold mb-2 text-l3-paper">
+            {story.title}
+          </h1>
 
-      <div className="bg-l3-card rounded-2xl shadow p-6 mb-6 border border-purple-900/30">
-        <p className="text-gray-300 whitespace-pre-line">
-          {story.description || "Esta historia aún no tiene descripción."}
-        </p>
+          <p className="text-sm md:text-base text-l3-muted mb-4">
+            {story.author?.name ? `Por ${story.author.name}` : "Autor desconocido"}
+          </p>
+
+          <div className="bg-l3-card rounded-2xl shadow p-5 mb-6 border border-l3-border">
+            <p className="text-sm md:text-base text-l3-paper whitespace-pre-line">
+              {story.description || "Esta historia aún no tiene descripción."}
+            </p>
+          </div>
+        </div>
       </div>
 
-      <div className="flex flex-wrap gap-4 mb-6">
+      <div className="flex flex-wrap gap-4 my-6">
         <button className="px-4 py-2 bg-red-500 text-white rounded-xl hover:opacity-90">
           ❤️ Me gusta
         </button>

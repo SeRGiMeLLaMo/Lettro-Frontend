@@ -15,6 +15,9 @@ function Profile() {
 
   if (!user) return <p>Cargando perfil...</p>;
 
+  const stories = user.stories || [];
+  const followersCount = (user.followers || []).length;
+
   return (
     <div style={{ maxWidth: "900px", margin: "40px auto" }}>
       
@@ -34,8 +37,8 @@ function Profile() {
 
         <div>
           <h1>{user.name}</h1>
-          <p>{user.followers.length} seguidores</p>
-          <p>{user.stories.length} stories</p>
+          <p>{followersCount} seguidores</p>
+          <p>{stories.length} stories</p>
         </div>
       </div>
 
@@ -44,10 +47,10 @@ function Profile() {
       {/* LISTA DE STORIES */}
       <h2>Stories</h2>
 
-      {user.stories.length === 0 ? (
+      {stories.length === 0 ? (
         <p>Este usuario no tiene stories.</p>
       ) : (
-        user.stories.map((story) => (
+        stories.map((story) => (
           <div
             key={story.id}
             style={{

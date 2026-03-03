@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Story from "./pages/Story";
 import Search from "./pages/Search";
 import CreateStory from "./pages/CreateStory";
+import EditStory from "./pages/EditStory"; 
 import Profile from "./pages/Profile";
 
 
@@ -17,6 +18,7 @@ return (
 <Route path="/story/:id" element={<Story />} />
 <Route path="/search" element={<Search />} />
 <Route path="/create-story" element={<CreateStory />} />
+<Route path="/stories/:id/edit" element={<EditStory />} />
 <Route path="/profile/:id" element={<Profile />} />
 </Routes>
 </div>

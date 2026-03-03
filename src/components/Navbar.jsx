@@ -2,17 +2,28 @@ import { NavLink, Link } from "react-router-dom";
 
 export default function Navbar() {
   const baseLink =
-    "text-sm md:text-base text-l3-muted hover:text-l3-gold transition px-2 md:px-3 py-1 rounded-full";
+    "inline-flex items-center text-sm md:text-base text-l3-muted hover:text-l3-gold transition px-2 md:px-3 py-1 rounded-full whitespace-nowrap mx-2 md:mx-3";
 
   const activeLink =
-    "text-sm md:text-base text-l3-gold font-semibold px-2 md:px-3 py-1 rounded-full bg-l3-chip";
+    "inline-flex items-center text-sm md:text-base text-l3-gold font-semibold px-2 md:px-3 py-1 rounded-full bg-l3-chip whitespace-nowrap mx-2 md:mx-3";
 
   return (
     <nav className="sticky top-0 z-30 bg-l3-card/95 border-b border-l3-border px-4 md:px-8 py-3 flex items-center justify-between backdrop-blur">
       {/* Logo + nombre */}
-      <Link to="/" className="flex items-center gap-3">
-        <div className="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-gradient-to-br from-l3-gold/80 to-l3-brown flex items-center justify-center shadow-lg shadow-l3-gold/40">
-          <span className="text-xl font-serif text-l3-bg">L</span>
+      <Link to="/" className="flex items-center gap-3 flex-shrink-0">
+        <div
+          className="flex items-center justify-center overflow-hidden"
+          style={{ width: 54, height: 54 }}
+        >
+          <img
+            src="/LogoNavbar.png"
+            alt="Logo L3ttro"
+            width={44}
+            height={44}
+            className="block object-contain"
+            style={{ maxWidth: "100%", maxHeight: "100%" }}
+            loading="eager"
+          />
         </div>
         <div className="flex flex-col leading-tight">
           <span className="text-lg md:text-xl font-serif text-l3-paper">
@@ -25,32 +36,34 @@ export default function Navbar() {
       </Link>
 
       {/* Links de navegación */}
-      <div className="flex items-center gap-3 md:gap-4 lg:gap-6">
-        <NavLink
-          to="/"
-          className={({ isActive }) => (isActive ? activeLink : baseLink)}
-          end
-        >
-          Inicio
-        </NavLink>
+      <div className="flex-1 flex justify-center min-w-0">
+        <div className="flex items-center" style={{ gap: 28 }}>
+          <NavLink
+            to="/"
+            className={({ isActive }) => (isActive ? activeLink : baseLink)}
+            end
+          >
+            Inicio
+          </NavLink>
 
-        <NavLink
-          to="/search"
-          className={({ isActive }) => (isActive ? activeLink : baseLink)}
-        >
-          Explorar libros
-        </NavLink>
+          <NavLink
+            to="/search"
+            className={({ isActive }) => (isActive ? activeLink : baseLink)}
+          >
+            Explorar libros
+          </NavLink>
 
-        <NavLink
-          to="/profile/1"
-          className={({ isActive }) => (isActive ? activeLink : baseLink)}
-        >
-          Mi estantería
-        </NavLink>
+          <NavLink
+            to="/profile/1"
+            className={({ isActive }) => (isActive ? activeLink : baseLink)}
+          >
+            Mi estantería
+          </NavLink>
+        </div>
       </div>
 
       {/* Botones de acción */}
-      <div className="flex items-center gap-2 md:gap-3">
+      <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
         <Link
           to="/login"
           className="hidden md:inline-flex px-3 py-1.5 text-sm rounded-full border border-l3-border text-l3-muted hover:bg-l3-chip hover:text-l3-paper transition"

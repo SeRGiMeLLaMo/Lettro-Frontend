@@ -114,9 +114,9 @@ export default function Home() {
                 <Link
                   key={story.id}
                   to={`/story/${story.id}`}
-                  className="snap-start flex-shrink-0 w-40 md:w-48 bg-l3-card rounded-2xl p-4 shadow-md hover:shadow-lg border border-l3-border hover:-translate-y-0.5 transition transform"
+                  className="snap-start flex-shrink-0 w-36 md:w-40 bg-l3-card rounded-2xl p-4 shadow-md hover:shadow-lg border border-l3-border hover:-translate-y-0.5 transition transform"
                 >
-                  <div className="w-full aspect-[2/3] rounded-xl mb-3 overflow-hidden bg-gradient-to-br from-l3-gold/40 to-l3-brown/30 flex items-center justify-center">
+                  <div  className="w-full max-w-[140px] md:max-w-[160px] aspect-[2/3] rounded-xl mb-3 overflow-hidden bg-gradient-to-br from-l3-gold/40 to-l3-brown/30 flex items-center justify-center mx-auto">
                     {coverUrl ? (
                       <img
                         src={coverUrl}

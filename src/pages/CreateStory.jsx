@@ -1,6 +1,7 @@
 // useState → para guardar datos del formulario en memoria
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth.js";
 
 // axios → para hacer peticiones HTTP a Laravel
 import axios from "axios";
@@ -23,6 +24,8 @@ const genresList = [
 export default function CreateStory() {
 
   const navigate = useNavigate();
+  const { user, token } = useAuth();
+  const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
 
   // Estado principal del formulario
   // Aquí guardamos lo que el usuario escribe
@@ -101,20 +104,19 @@ export default function CreateStory() {
     form.genres.forEach((id) => {
       data.append("genre_id[]", id);
     });
+    // No se envía user_id; el backend toma Auth::id()
 
     try {
 
       // Petición POST a Laravel
-      const response = await axios.post(
-        "http://localhost:8000/api/stories",
-        data,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            "Accept": "application/json",
-          },
-        }
-      );
+      const response = await axios.post(`${API_BASE}/stories`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Accept: "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+        withCredentials: true,
+      });
 
       // Si todo sale bien
       alert("Story creada correctamente 🎉");
@@ -123,7 +125,7 @@ export default function CreateStory() {
       console.log(response.data);
 
       // Redirigir a la Home, donde se listan las historias recientes
-      navigate("/");
+      navigate(user?.id ? `/profile/${user.id}` : "/");
 
     } catch (error) {
 

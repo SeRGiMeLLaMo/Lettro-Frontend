@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../hooks/useAuth.js";
 
 const genresList = [
   { id: 1, name: "Fantasía" },
@@ -18,6 +19,8 @@ const genresList = [
 export default function EditStory() {
   const { id } = useParams();          // id de la historia
   const navigate = useNavigate();
+  const { user, token } = useAuth();
+  const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
 
   const [form, setForm] = useState({
     title: "",
@@ -33,7 +36,7 @@ export default function EditStory() {
   useEffect(() => {
     const fetchStory = async () => {
       try {
-        const res = await axios.get(`http://localhost:8000/api/stories/${id}`, {
+        const res = await axios.get(`${API_BASE}/stories/${id}`, {
           headers: { Accept: "application/json" },
         });
 
@@ -54,7 +57,7 @@ export default function EditStory() {
     };
 
     fetchStory();
-  }, [id]);
+  }, [id, API_BASE]);
 
   const handleChange = (e) => {
     setForm({
@@ -104,18 +107,21 @@ export default function EditStory() {
 
     try {
       await axios.post(
-        `http://localhost:8000/api/stories/${id}?_method=PUT`, // método spoofing
+        `${API_BASE}/stories/${id}?_method=PUT`, // método spoofing
         data,
         {
           headers: {
             "Content-Type": "multipart/form-data",
             Accept: "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
           },
+          withCredentials: true,
         }
       );
 
       alert("Story actualizada correctamente");
-      navigate(`/profile/1`); // o a donde quieras volver
+      const backId = user?.id ? user.id : undefined;
+      navigate(backId ? `/profile/${backId}` : `/profile/${id}`);
     } catch (error) {
       if (error.response) {
         setErrors(error.response.data.errors);

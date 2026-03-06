@@ -7,6 +7,9 @@ import CreateStory from "./pages/CreateStory";
 import EditStory from "./pages/EditStory"; 
 import Profile from "./pages/Profile";
 import Tiptap from "./components/Tiptap";
+import Login from "./pages/login";
+import Register from "./pages/Register";
+
 
 
 export default function App() {
@@ -22,6 +25,10 @@ return (
 <Route path="/stories/:id/edit" element={<EditStory />} />
 <Route path="/profile/:id" element={<Profile />} /> 
 <Route path="/text-editor" element={<Tiptap />} />
+<Route path="/profile/:id" element={<Profile />} />
+<Route path="/login" element={<Login />} />
+<Route path="/register" element={<Register />} />
+
 </Routes>
 </div>
 </Router>

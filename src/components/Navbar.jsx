@@ -1,6 +1,9 @@
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth.js";
 
 export default function Navbar() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const baseLink =
     "inline-flex items-center text-sm md:text-base text-l3-muted hover:text-l3-gold transition px-2 md:px-3 py-1 rounded-full whitespace-nowrap mx-2 md:mx-3";
 
@@ -54,7 +57,7 @@ export default function Navbar() {
           </NavLink>
 
           <NavLink
-            to="/profile/1"
+            to={user ? `/profile/${user.id}` : "/profile/1"}
             className={({ isActive }) => (isActive ? activeLink : baseLink)}
           >
             Mi estantería
@@ -64,12 +67,37 @@ export default function Navbar() {
 
       {/* Botones de acción */}
       <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
-        <Link
-          to="/login"
-          className="hidden md:inline-flex px-3 py-1.5 text-sm rounded-full border border-l3-border text-l3-muted hover:bg-l3-chip hover:text-l3-paper transition"
-        >
-          Iniciar sesión
-        </Link>
+        {!user ? (
+          <>
+            <Link
+              to="/login"
+              className="inline-flex px-3 py-1.5 text-sm rounded-full border border-l3-border text-l3-muted hover:bg-l3-chip hover:text-l3-paper transition"
+            >
+              Iniciar sesión
+            </Link>
+            <Link
+              to="/register"
+              className="inline-flex px-3 py-1.5 text-sm rounded-full border border-l3-border text-l3-muted hover:bg-l3-chip hover:text-l3-paper transition"
+            >
+              Registrarse
+            </Link>
+          </>
+        ) : (
+          <>
+            <span className="px-3 py-1.5 text-sm rounded-full border border-l3-border text-l3-muted">
+              {user.username || user.email}
+            </span>
+            <button
+              onClick={() => {
+                logout();
+                navigate("/");
+              }}
+              className="inline-flex px-3 py-1.5 text-sm rounded-full border border-l3-border text-l3-muted hover:bg-l3-chip hover:text-l3-paper transition"
+            >
+              Cerrar sesión
+            </button>
+          </>
+        )}
 
         <Link
           to="/create-story"

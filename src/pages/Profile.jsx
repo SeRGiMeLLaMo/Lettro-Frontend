@@ -77,57 +77,80 @@
   */
 
     import { useEffect, useState } from "react";
-    import { useParams, useNavigate, Link } from "react-router-dom";
+    import { useParams, useNavigate } from "react-router-dom";
     import axios from "axios";
+    import { useAuth } from "../hooks/useAuth.js";
     
     function Profile() {
       const { id } = useParams();
       const navigate = useNavigate();
+      const { user: viewer, token } = useAuth();
     
       const [user, setUser] = useState(null);
-      const [expandedStoryId, setExpandedStoryId] = useState(null); // historia con desplegable abierto
+      // sin desplegable de capítulos
+      const [following, setFollowing] = useState(false);
     
+      const API_BASE =
+        import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
       useEffect(() => {
         axios
-          .get(`http://localhost:8000/api/users/${id}`)
+          .get(`${API_BASE}/users/${id}`)
           .then((res) => setUser(res.data))
           .catch((err) => console.error(err));
-      }, [id]);
+      }, [id, API_BASE]);
+      useEffect(() => {
+        if (!id) return;
+        axios
+          .get(`${API_BASE}/users/${id}/follow/status`, {
+            headers: {
+              Accept: "application/json",
+              Authorization: token ? `Bearer ${token}` : "",
+            },
+            withCredentials: true,
+          })
+          .then((res) => {
+            const isFollowing = !!res.data?.following;
+            const count = res.data?.followers_count;
+            setFollowing(isFollowing);
+            if (typeof count === "number") {
+              setUser((prev) => (prev ? { ...prev, followers_count: count } : prev));
+            }
+          })
+          .catch(() => {});
+      }, [id, API_BASE, token]);
     
       if (!user) return <p>Cargando perfil...</p>;
     
       const stories = user.stories || [];
-      const followersCount = (user.followers || []).length;
+      const followersCount = user.followers_count ?? (user.followers || []).length;
     
-      const toggleStoryDropdown = (storyId) => {
-        setExpandedStoryId((current) => (current === storyId ? null : storyId));
-      };
+      // eliminado: ya no se usa desplegable de capítulos
     
-      const handleDeleteStory = async (storyId) => {
-        if (!window.confirm("¿Seguro que quieres eliminar esta historia?")) return;
-    
+      const handleToggleFollow = async () => {
+        if (!viewer) {
+          navigate("/register");
+          return;
+        }
         try {
-          await axios.delete(`http://localhost:8000/api/stories/${storyId}`, {
-            headers: {
-              Accept: "application/json",
-            },
-          });
-    
-          // Actualizar estado en el frontend quitando la historia borrada
-          setUser((prev) => ({
-            ...prev,
-            stories: (prev.stories || []).filter((s) => s.id !== storyId),
-          }));
+          const res = await axios.post(
+            `${API_BASE}/users/${id}/follow/toggle`,
+            {},
+            {
+              headers: {
+                Accept: "application/json",
+                Authorization: token ? `Bearer ${token}` : "",
+              },
+              withCredentials: true,
+            }
+          );
+          setFollowing(!!res.data?.following);
+          if (typeof res.data?.followers_count === "number") {
+            setUser((prev) => ({ ...prev, followers_count: res.data.followers_count }));
+          }
         } catch (error) {
           console.error(error);
-          alert("No se pudo eliminar la historia.");
+          alert("Debes iniciar sesión para seguir autores.");
         }
-      };
-    
-      const handleAddChapter = (storyId) => {
-        // Aquí puedes navegar a una pantalla de creación de capítulo
-        // ajusta la ruta a como la tengas en tu router:
-        navigate(`/stories/${storyId}/new-chapter`);
       };
     
       return (
@@ -145,9 +168,31 @@
               }}
             />
             <div>
-              <h1>{user.name}</h1>
+              <h1>
+                {user.name}{" "}
+                {viewer?.id !== Number(id) && following ? (
+                  <span style={{ fontSize: "0.9rem", color: "#28a745" }}>· Siguiendo</span>
+                ) : null}
+              </h1>
               <p>{followersCount} seguidores</p>
               <p>{stories.length} stories</p>
+              {viewer?.id !== Number(id) && (
+                <button
+                  type="button"
+                  onClick={handleToggleFollow}
+                  style={{
+                    marginTop: "10px",
+                    padding: "6px 10px",
+                    borderRadius: "4px",
+                    border: "1px solid #007bff",
+                    background: following ? "#6c757d" : "#007bff",
+                    color: "white",
+                    fontSize: "0.85rem",
+                  }}
+                >
+                  {following ? "Dejar de seguir" : "Seguir"}
+                </button>
+              )}
             </div>
           </div>
     
@@ -160,9 +205,7 @@
             <p>Este usuario no tiene stories.</p>
           ) : (
             stories.map((story) => {
-              const isOpen = expandedStoryId === story.id;
-              const chapters = story.chapters || [];
-    
+              const likesCount = story.likes_count || 0;
               return (
                 <div
                   key={story.id}
@@ -173,100 +216,63 @@
                     marginBottom: "10px",
                   }}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      gap: "10px",
-                    }}
-                  >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px" }}>
                     <div>
                       <h3>{story.title}</h3>
-                      <p>{chapters.length} capítulos</p>
+                      <p>{likesCount} me gustas</p>
                     </div>
-    
-                    <div style={{ display: "flex", gap: "8px" }}>
-                      {/* Botón editar: ajusta la ruta a tu pantalla de edición */}
-                      <Link
-                        to={`/stories/${story.id}/edit`}
-                        style={{
-                          padding: "6px 10px",
-                          borderRadius: "4px",
-                          border: "1px solid #007bff",
-                          color: "#007bff",
-                          textDecoration: "none",
-                          fontSize: "0.85rem",
-                        }}
-                      >
-                        Editar
-                      </Link>
-    
-                      {/* Botón eliminar */}
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteStory(story.id)}
-                        style={{
-                          padding: "6px 10px",
-                          borderRadius: "4px",
-                          border: "1px solid #dc3545",
-                          background: "#dc3545",
-                          color: "white",
-                          fontSize: "0.85rem",
-                        }}
-                      >
-                        Eliminar
-                      </button>
-    
-                      {/* Botón desplegable capítulos */}
-                      <button
-                        type="button"
-                        onClick={() => toggleStoryDropdown(story.id)}
-                        style={{
-                          padding: "6px 10px",
-                          borderRadius: "4px",
-                          border: "1px solid #6c757d",
-                          background: isOpen ? "#6c757d" : "white",
-                          color: isOpen ? "white" : "#6c757d",
-                          fontSize: "0.85rem",
-                        }}
-                      >
-                        {isOpen ? "Ocultar capítulos" : "Ver capítulos"}
-                      </button>
-                    </div>
+                    {viewer?.id === Number(id) && (
+                      <div style={{ display: "flex", gap: "8px" }}>
+                        <button
+                          type="button"
+                          onClick={() => navigate(`/stories/${story.id}/edit`)}
+                          style={{
+                            padding: "6px 10px",
+                            borderRadius: "4px",
+                            border: "1px solid #007bff",
+                            background: "white",
+                            color: "#007bff",
+                            fontSize: "0.85rem",
+                          }}
+                        >
+                          Editar
+                        </button>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            if (!window.confirm("¿Seguro que quieres eliminar esta historia?")) return;
+                            try {
+                              await axios.delete(`${API_BASE}/stories/${story.id}`, {
+                                headers: {
+                                  Accept: "application/json",
+                                  Authorization: token ? `Bearer ${token}` : "",
+                                },
+                                withCredentials: true,
+                              });
+                              setUser((prev) =>
+                                prev
+                                  ? { ...prev, stories: (prev.stories || []).filter((s) => s.id !== story.id) }
+                                  : prev
+                              );
+                            } catch (error) {
+                              console.error(error);
+                              alert("No se pudo eliminar la historia.");
+                            }
+                          }}
+                          style={{
+                            padding: "6px 10px",
+                            borderRadius: "4px",
+                            border: "1px solid #dc3545",
+                            background: "#dc3545",
+                            color: "white",
+                            fontSize: "0.85rem",
+                          }}
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    )}
                   </div>
-    
-                  {/* DESPLEGABLE DE CAPÍTULOS */}
-                  {isOpen && (
-                    <div style={{ marginTop: "10px", paddingLeft: "10px" }}>
-                      {chapters.length > 0 && (
-                        <ul style={{ marginBottom: "10px" }}>
-                          {chapters.map((ch) => (
-                            <li key={ch.id}>
-                              {ch.order ? `${ch.order}. ` : ""}
-                              {ch.title}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-    
-                      {/* Botón de añadir capítulo (siempre visible dentro del desplegable) */}
-                      <button
-                        type="button"
-                        onClick={() => handleAddChapter(story.id)}
-                        style={{
-                          padding: "6px 10px",
-                          borderRadius: "4px",
-                          border: "1px solid #28a745",
-                          background: "#28a745",
-                          color: "white",
-                          fontSize: "0.85rem",
-                        }}
-                      >
-                        Añadir capítulo
-                      </button>
-                    </div>
-                  )}
                 </div>
               );
             })

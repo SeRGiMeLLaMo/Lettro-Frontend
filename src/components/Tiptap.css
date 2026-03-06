@@ -1,0 +1,30 @@
+.Tiptap {
+    width: 80vw;
+    max-width: 1000px;
+    height: 90vh;
+    overflow: auto;
+    margin: 40px auto;
+    margin-top: 80px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    min-height: 50vh;
+    z-index: 0;
+    outline: 2px solid rgb(26, 130, 199);
+    
+    ul, li {
+        margin-left: 20px;
+    }
+
+    img{
+        max-width: 50%;
+    }
+    
+}
+
+.ProseMirror {
+    outline: none;
+    border-radius: 5px;
+}
+
+    

@@ -4,7 +4,7 @@ import axios from "axios";
 import { useAuth } from "../hooks/useAuth.js";
 
 export default function Register() {
-  const { setUser } = useAuth();
+  const { setUser, setToken } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
@@ -32,8 +32,10 @@ export default function Register() {
         withCredentials: true,
       });
       const newUser = res.data?.user;
+      const token = res.data?.token;
       if (newUser) {
         setUser(newUser);
+        if (token) setToken(token);
         navigate(`/profile/${newUser.id}`);
       }
       setStatus({ loading: false, error: "", success: "Registro exitoso" });

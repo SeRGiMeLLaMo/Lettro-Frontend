@@ -87,17 +87,19 @@
       const { user: viewer, token } = useAuth();
     
       const [user, setUser] = useState(null);
-      // sin desplegable de capítulos
       const [following, setFollowing] = useState(false);
+      const [expandedStoryId, setExpandedStoryId] = useState(null);
     
       const API_BASE =
         import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+    
       useEffect(() => {
         axios
           .get(`${API_BASE}/users/${id}`)
           .then((res) => setUser(res.data))
           .catch((err) => console.error(err));
       }, [id, API_BASE]);
+    
       useEffect(() => {
         if (!id) return;
         axios
@@ -124,7 +126,15 @@
       const stories = user.stories || [];
       const followersCount = user.followers_count ?? (user.followers || []).length;
     
-      // eliminado: ya no se usa desplegable de capítulos
+      const toggleStoryDropdown = (storyId) => {
+        setExpandedStoryId((current) => (current === storyId ? null : storyId));
+      };
+    
+      const handleAddChapter = (storyId) => {
+        // Solo el dueño del perfil puede añadir capítulos
+        if (!viewer || viewer.id !== Number(id)) return;
+        navigate(`/stories/${storyId}/new-chapter`);
+      };
     
       const handleToggleFollow = async () => {
         if (!viewer) {
@@ -206,6 +216,9 @@
           ) : (
             stories.map((story) => {
               const likesCount = story.likes_count || 0;
+              const chapters = story.chapters || [];
+              const isOpen = expandedStoryId === story.id;
+    
               return (
                 <div
                   key={story.id}
@@ -216,63 +229,128 @@
                     marginBottom: "10px",
                   }}
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: "10px",
+                    }}
+                  >
                     <div>
                       <h3>{story.title}</h3>
                       <p>{likesCount} me gustas</p>
                     </div>
-                    {viewer?.id === Number(id) && (
-                      <div style={{ display: "flex", gap: "8px" }}>
-                        <button
-                          type="button"
-                          onClick={() => navigate(`/stories/${story.id}/edit`)}
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      {viewer?.id === Number(id) && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => navigate(`/stories/${story.id}/edit`)}
+                            style={{
+                              padding: "6px 10px",
+                              borderRadius: "4px",
+                              border: "1px solid #007bff",
+                              background: "white",
+                              color: "#007bff",
+                              fontSize: "0.85rem",
+                            }}
+                          >
+                            Editar
+                          </button>
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              if (!window.confirm("¿Seguro que quieres eliminar esta historia?")) return;
+                              try {
+                                await axios.delete(`${API_BASE}/stories/${story.id}`, {
+                                  headers: {
+                                    Accept: "application/json",
+                                    Authorization: token ? `Bearer ${token}` : "",
+                                  },
+                                  withCredentials: true,
+                                });
+                                setUser((prev) =>
+                                  prev
+                                    ? { ...prev, stories: (prev.stories || []).filter((s) => s.id !== story.id) }
+                                    : prev
+                                );
+                              } catch (error) {
+                                console.error(error);
+                                alert("No se pudo eliminar la historia.");
+                              }
+                            }}
+                            style={{
+                              padding: "6px 10px",
+                              borderRadius: "4px",
+                              border: "1px solid #dc3545",
+                              background: "#dc3545",
+                              color: "white",
+                              fontSize: "0.85rem",
+                            }}
+                          >
+                            Eliminar
+                          </button>
+                        </>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => toggleStoryDropdown(story.id)}
+                        style={{
+                          padding: "6px 10px",
+                          borderRadius: "4px",
+                          border: "1px solid #6c757d",
+                          background: isOpen ? "#6c757d" : "white",
+                          color: isOpen ? "white" : "#6c757d",
+                          fontSize: "0.85rem",
+                        }}
+                      >
+                        {isOpen ? "Ocultar capítulos" : "Ver capítulos"}
+                      </button>
+                    </div>
+                  </div>
+    
+                  {isOpen && (
+                    <div style={{ marginTop: "10px", paddingLeft: "10px" }}>
+                      {chapters.length > 0 ? (
+                        <ul
                           style={{
-                            padding: "6px 10px",
-                            borderRadius: "4px",
-                            border: "1px solid #007bff",
-                            background: "white",
-                            color: "#007bff",
-                            fontSize: "0.85rem",
+                            marginBottom: "10px",
+                            maxHeight: "150px",
+                            overflowY: "auto",
                           }}
                         >
-                          Editar
-                        </button>
+                          {chapters.map((ch) => (
+                            <li key={ch.id}>
+                              {ch.order ? `${ch.order}. ` : ""}
+                              {ch.title}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p style={{ fontSize: "0.85rem", color: "#666", marginBottom: "8px" }}>
+                          Esta historia aún no tiene capítulos.
+                        </p>
+                      )}
+    
+                      {viewer?.id === Number(id) && (
                         <button
                           type="button"
-                          onClick={async () => {
-                            if (!window.confirm("¿Seguro que quieres eliminar esta historia?")) return;
-                            try {
-                              await axios.delete(`${API_BASE}/stories/${story.id}`, {
-                                headers: {
-                                  Accept: "application/json",
-                                  Authorization: token ? `Bearer ${token}` : "",
-                                },
-                                withCredentials: true,
-                              });
-                              setUser((prev) =>
-                                prev
-                                  ? { ...prev, stories: (prev.stories || []).filter((s) => s.id !== story.id) }
-                                  : prev
-                              );
-                            } catch (error) {
-                              console.error(error);
-                              alert("No se pudo eliminar la historia.");
-                            }
-                          }}
+                          onClick={() => handleAddChapter(story.id)}
                           style={{
                             padding: "6px 10px",
                             borderRadius: "4px",
-                            border: "1px solid #dc3545",
-                            background: "#dc3545",
+                            border: "1px solid #28a745",
+                            background: "#28a745",
                             color: "white",
                             fontSize: "0.85rem",
                           }}
                         >
-                          Eliminar
+                          Añadir capítulo
                         </button>
-                      </div>
-                    )}
-                  </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               );
             })

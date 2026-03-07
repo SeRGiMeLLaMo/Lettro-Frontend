@@ -85,6 +85,12 @@ export default function CreateStory() {
   const handleSubmit = async (e) => {
     e.preventDefault(); // evita que la página se recargue
 
+    if (!user || !token) {
+      alert("Debes iniciar sesión para crear historias.");
+      navigate("/login");
+      return;
+    }
+
     setLoading(true);
     setErrors(null);
 

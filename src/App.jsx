@@ -6,9 +6,10 @@ import Search from "./pages/Search";
 import CreateStory from "./pages/CreateStory";
 import EditStory from "./pages/EditStory"; 
 import Profile from "./pages/Profile";
-import Tiptap from "./components/Tiptap";
-import Login from "./pages/login";
+import Login from "./pages/Login";
 import Register from "./pages/Register";
+import CreateChapter from "./pages/CreateChapter";
+import ChapterView from "./pages/ChapterView";
 
 
 
@@ -23,11 +24,11 @@ return (
 <Route path="/search" element={<Search />} />
 <Route path="/create-story" element={<CreateStory />} />
 <Route path="/stories/:id/edit" element={<EditStory />} />
-<Route path="/profile/:id" element={<Profile />} /> 
-<Route path="/text-editor" element={<Tiptap />} />
 <Route path="/profile/:id" element={<Profile />} />
 <Route path="/login" element={<Login />} />
 <Route path="/register" element={<Register />} />
+<Route path="/stories/:id/new-chapter" element={<CreateChapter />} />
+<Route path="/chapters/:id" element={<ChapterView />} />
 
 </Routes>
 </div>

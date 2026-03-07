@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../hooks/useAuth.js";
 
@@ -59,6 +59,10 @@ export default function Story() {
       navigate("/register");
       return;
     }
+    // Evitar likes propios
+    if (user?.id && story?.author?.id && user.id === story.author.id) {
+      return;
+    }
     try {
       const res = await axios.post(
         `${API_BASE}/likes/toggle`,
@@ -87,6 +91,10 @@ export default function Story() {
     }
     const authorId = story?.author?.id;
     if (!authorId) return;
+    // Evitar seguirse a uno mismo
+    if (user?.id && user.id === authorId) {
+      return;
+    }
     try {
       const res = await axios.post(
         `${API_BASE}/users/${authorId}/follow/toggle`,
@@ -170,22 +178,26 @@ export default function Story() {
           </div>
 
           <div className="flex justify-end gap-3">
-            <button
-              onClick={handleToggleLike}
-              className={`px-4 py-2 rounded-xl hover:opacity-90 ${
-                liked ? "bg-red-600 text-white" : "bg-red-500 text-white"
-              }`}
-            >
-              ❤️ Me gusta ({likesCount})
-            </button>
-            <button
-              onClick={handleToggleFollow}
-              className={`px-4 py-2 rounded-xl hover:opacity-90 ${
-                following ? "bg-gray-600 text-white" : "bg-gray-700 text-white"
-              }`}
-            >
-              {following ? "Dejar de seguir" : "Seguir autor"}
-            </button>
+            {!(user?.id && story?.author?.id && user.id === story.author.id) && (
+              <>
+                <button
+                  onClick={handleToggleLike}
+                  className={`px-4 py-2 rounded-xl hover:opacity-90 ${
+                    liked ? "bg-red-600 text-white" : "bg-red-500 text-white"
+                  }`}
+                >
+                  ❤️ Me gusta ({likesCount})
+                </button>
+                <button
+                  onClick={handleToggleFollow}
+                  className={`px-4 py-2 rounded-xl hover:opacity-90 ${
+                    following ? "bg-gray-600 text-white" : "bg-gray-700 text-white"
+                  }`}
+                >
+                  {following ? "Dejar de seguir" : "Seguir autor"}
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -204,10 +216,13 @@ export default function Story() {
                   key={ch.id}
                   className="flex items-center justify-between text-sm text-l3-paper border-b border-l3-border/60 last:border-b-0 pb-1"
                 >
-                  <span>
+                  <Link
+                    to={`/chapters/${ch.id}`}
+                    className="text-l3-paper hover:text-l3-gold"
+                  >
                     {ch.order ? `${ch.order}. ` : ""}
                     {ch.title}
-                  </span>
+                  </Link>
                 </li>
               ))}
             </ul>

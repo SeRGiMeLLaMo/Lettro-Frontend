@@ -1,0 +1,51 @@
+ .Toolbar {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   gap: 12px;
+   margin-bottom: 0;
+ }
+ 
+ .Toolbar .left {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+ }
+ 
+ .Toolbar .right {
+   display: flex;
+   align-items: center;
+ }
+ 
+ .Toolbar .left button {
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+   width: 36px;
+   height: 36px;
+   border: 1px solid var(--l3-border);
+   border-radius: 8px;
+   background: var(--l3-card);
+   color: var(--l3-paper);
+   cursor: pointer;
+ }
+ 
+ .Toolbar .left button.active {
+   background: var(--l3-chip);
+ }
+ 
+ .Toolbar .left button svg {
+   width: 20px;
+   height: 20px;
+   color: var(--l3-paper);
+   stroke: currentColor;
+ }
+ 
+ .Toolbar .btnGuardar {
+   padding: 8px 12px;
+   border-radius: 8px;
+   background: var(--l3-gold);
+   color: white;
+   border: 1px solid var(--l3-border);
+   cursor: pointer;
+ }

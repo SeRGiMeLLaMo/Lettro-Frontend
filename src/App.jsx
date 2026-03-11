@@ -4,7 +4,8 @@ import Home from "./pages/Home";
 import Story from "./pages/Story";
 import Search from "./pages/Search";
 import CreateStory from "./pages/CreateStory";
-import EditStory from "./pages/EditStory"; 
+import EditStory from "./pages/EditStory";
+import EditProfile from "./pages/EditProfile";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -23,8 +24,9 @@ return (
 <Route path="/story/:id" element={<Story />} />
 <Route path="/search" element={<Search />} />
 <Route path="/create-story" element={<CreateStory />} />
-<Route path="/stories/:id/edit" element={<EditStory />} />
-<Route path="/profile/:id" element={<Profile />} />
+        <Route path="/stories/:id/edit" element={<EditStory />} />
+        <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/profile/:id" element={<Profile />} />
 <Route path="/login" element={<Login />} />
 <Route path="/register" element={<Register />} />
 <Route path="/stories/:id/new-chapter" element={<CreateChapter />} />

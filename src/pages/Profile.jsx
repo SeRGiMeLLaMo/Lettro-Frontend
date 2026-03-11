@@ -166,15 +166,16 @@
       return (
         <div style={{ maxWidth: "900px", margin: "40px auto" }}>
           {/* HEADER PERFIL */}
-          <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
             <img
-              src={user.profile_photo || "/perfilpredeterminado.png"}
+              src={user.photo ? `http://127.0.0.1:8000/storage/${user.photo}` : "/perfilpredeterminado.png"}
               alt="Foto perfil"
               style={{
-                width: "120px",
-                height: "120px",
-                borderRadius: "50%",
+                width: "60px",
+                height: "60px",
+                borderRadius: "20%",
                 objectFit: "cover",
+                border: "1px solid #7C3AED",
               }}
             />
             <div>
@@ -184,8 +185,32 @@
                   <span style={{ fontSize: "0.9rem", color: "#28a745" }}>· Siguiendo</span>
                 ) : null}
               </h1>
+              {user.description && (
+                <p className="text-sm text-l3-muted max-w-md mt-1 italic">
+                  {user.description}
+                </p>
+              )}
               <p>{followersCount} seguidores</p>
               <p>{stories.length} stories</p>
+              {viewer?.id === Number(id) && (
+                <button
+                  type="button"
+                  onClick={() => navigate("/edit-profile")}
+                  style={{
+                    marginTop: "10px",
+                    padding: "6px 12px",
+                    borderRadius: "8px",
+                    border: "1px solid #7C3AED",
+                    background: "transparent",
+                    color: "#7C3AED",
+                    fontSize: "0.85rem",
+                    fontWeight: "600"
+                  }}
+                  className="hover:bg-l3-purple hover:text-white transition"
+                >
+                  Editar Perfil
+                </button>
+              )}
               {viewer?.id !== Number(id) && (
                 <button
                   type="button"

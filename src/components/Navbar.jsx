@@ -57,7 +57,7 @@ export default function Navbar() {
           </NavLink>
 
           <NavLink
-            to={user ? `/profile/${user.id}` : "/profile/1"}
+            to={user ? `/profile/${user.id}` : "/login"}
             className={({ isActive }) => (isActive ? activeLink : baseLink)}
           >
             Mi estantería
@@ -99,13 +99,15 @@ export default function Navbar() {
           </>
         )}
 
-        <Link
-          to="/create-story"
-          className="inline-flex items-center gap-2 bg-l3-gold text-l3-bg text-sm md:text-base px-4 md:px-5 py-1.5 md:py-2 rounded-full font-semibold hover:bg-yellow-400 transition shadow-lg shadow-l3-gold/30"
-        >
-          <span className="text-base md:text-lg">＋</span>
-          <span>Publicar historia</span>
-        </Link>
+        {user && (
+          <Link
+            to="/create-story"
+            className="inline-flex items-center gap-2 bg-l3-gold text-l3-bg text-sm md:text-base px-4 md:px-5 py-1.5 md:py-2 rounded-full font-semibold hover:bg-yellow-400 transition shadow-lg shadow-l3-gold/30"
+          >
+            <span className="text-base md:text-lg">＋</span>
+            <span>Publicar historia</span>
+          </Link>
+        )}
       </div>
     </nav>
   );

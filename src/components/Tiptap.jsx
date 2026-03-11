@@ -1,36 +1,22 @@
 import './Tiptap.css';
-
 import { useEditor, EditorContent } from '@tiptap/react';
-
 import StarterKit from '@tiptap/starter-kit';
-
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import Underline from "@tiptap/extension-underline";
 import Placeholder from "@tiptap/extension-placeholder";
 
 const Tiptap = ({ value = "", onChange, onReady, placeholder = "Aquí comienza tu historia..." }) => {
-    const uniqueExtensions = (() => {
-        const base = [
-            StarterKit,
-            Underline,
-            Placeholder.configure({
-                placeholder,
-                showOnlyWhenEditable: true,
-            }),
-        ];
-        const seen = new Set();
-        const out = [];
-        for (const ext of base) {
-            const name = ext?.name;
-            if (name && seen.has(name)) continue;
-            if (name) seen.add(name);
-            out.push(ext);
-        }
-        return out;
-    })();
+    const extensions = useMemo(() => [
+        StarterKit,
+        Underline,
+        Placeholder.configure({
+            placeholder,
+            showOnlyWhenEditable: true,
+        }),
+    ], [placeholder]);
 
     const editor = useEditor({
-        extensions: uniqueExtensions,
+        extensions,
         content: value || "",
         onUpdate: ({ editor }) => {
             onChange?.(editor.getHTML());

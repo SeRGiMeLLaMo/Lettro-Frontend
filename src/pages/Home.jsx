@@ -1,22 +1,29 @@
-import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import StoryCarousel from "../components/StoryCarousel";
 
 export default function Home() {
   const [stories, setStories] = useState([]);
+  const [genres, setGenres] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const carouselRef = useRef(null);
 
   useEffect(() => {
-    const fetchStories = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/stories", {
-          headers: {
-            Accept: "application/json",
-          },
-        });
-        setStories(response.data);
+        const [storiesRes, genresRes] = await Promise.all([
+          axios.get("http://localhost:8000/api/stories", {
+            headers: { Accept: "application/json" },
+          }),
+          axios.get("http://localhost:8000/api/genres", {
+            headers: { Accept: "application/json" },
+          }),
+        ]);
+
+        // Limitar a 25 historias máximo en total si fuera necesario, 
+        // pero aquí las usaremos para filtrar por género.
+        setStories(storiesRes.data.slice(0, 25));
+        setGenres(genresRes.data);
       } catch (err) {
         console.error(err);
         setError("No se pudieron cargar las historias.");
@@ -25,132 +32,54 @@ export default function Home() {
       }
     };
 
-    fetchStories();
+    fetchData();
   }, []);
 
-  const scrollCarousel = (direction) => {
-    const el = carouselRef.current;
-    if (!el) return;
-    const amount = el.clientWidth * 0.8;
-    el.scrollBy({ left: direction * amount, behavior: "smooth" });
-  };
-
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <div className="flex items-baseline justify-between mb-4">
-        <div>
-          <h1 className="text-3xl md:text-4xl font-bold text-l3-paper">
-            Historias recientes
-          </h1>
-          <p className="text-sm md:text-base text-l3-muted mt-1">
-            Descubre los últimos libros publicados por la comunidad.
-          </p>
-        </div>
-
-        {!loading && !error && stories.length > 0 && (
-          <div className="hidden md:flex gap-2">
-            <button
-              type="button"
-              onClick={() => scrollCarousel(-1)}
-              className="w-8 h-8 rounded-full border border-l3-border bg-white/70 text-l3-muted hover:text-l3-paper hover:bg-white shadow-sm flex items-center justify-center"
-            >
-              ‹
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollCarousel(1)}
-              className="w-8 h-8 rounded-full border border-l3-border bg-white/70 text-l3-muted hover:text-l3-paper hover:bg-white shadow-sm flex items-center justify-center"
-            >
-              ›
-            </button>
-          </div>
-        )}
-      </div>
+    <div className="max-w-7xl mx-auto p-6">
+      {/* Sección de Historias Recientes */}
+      <StoryCarousel
+        title="Historias recientes"
+        description="Descubre los últimos libros publicados por la comunidad."
+        stories={stories}
+      />
 
       {loading && (
-        <p className="text-gray-400 mb-4">Cargando historias...</p>
+        <div className="flex justify-center py-20">
+          <p className="text-l3-muted animate-pulse font-medium text-lg">
+            Cargando biblioteca...
+          </p>
+        </div>
       )}
 
       {!loading && error && (
-        <p className="text-red-400 mb-4">{error}</p>
+        <p className="text-red-400 mb-4 text-center bg-red-50 py-4 rounded-xl border border-red-100">
+          {error}
+        </p>
       )}
 
       {!loading && !error && stories.length === 0 && (
-        <p className="text-gray-400 mb-4">
+        <p className="text-gray-400 mb-4 text-center py-20 bg-l3-card/30 rounded-3xl border border-dashed border-l3-border">
           Todavía no hay historias creadas.
         </p>
       )}
 
-      {!loading && !error && stories.length > 0 && (
-        <div className="relative">
-          {/* Botones flotantes en móvil */}
-          <div className="flex justify-end gap-2 mb-2 md:hidden">
-            <button
-              type="button"
-              onClick={() => scrollCarousel(-1)}
-              className="w-8 h-8 rounded-full border border-l3-border bg-white/80 text-l3-muted flex items-center justify-center"
-            >
-              ‹
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollCarousel(1)}
-              className="w-8 h-8 rounded-full border border-l3-border bg-white/80 text-l3-muted flex items-center justify-center"
-            >
-              ›
-            </button>
-          </div>
+      {/* Carruseles por Género */}
+      {!loading && !error && genres.map((genre) => {
+        // Filtrar historias que tengan este género
+        const genreStories = stories.filter(story => 
+          story.genres?.some(g => g.id === genre.id)
+        );
 
-          <div
-            ref={carouselRef}
-            className="flex gap-4 overflow-x-auto pb-4 pt-1 scroll-smooth snap-x snap-mandatory"
-          >
-            {stories.map((story) => {
-              const coverUrl = story.cover_image
-                ? `http://localhost:8000/storage/${story.cover_image}`
-                : null;
-
-              return (
-                <Link
-                  key={story.id}
-                  to={`/story/${story.id}`}
-                  className="snap-start flex-shrink-0 w-36 md:w-40 bg-l3-card rounded-2xl p-4 shadow-md hover:shadow-lg border border-l3-border hover:-translate-y-0.5 transition transform"
-                >
-                  <div  className="w-full max-w-[140px] md:max-w-[160px] aspect-[2/3] rounded-xl mb-3 overflow-hidden bg-gradient-to-br from-l3-gold/40 to-l3-brown/30 flex items-center justify-center mx-auto">
-                    {coverUrl ? (
-                      <img
-                        src={coverUrl}
-                        alt={story.title}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <span className="inline-flex px-2 py-1 rounded-full text-[11px] font-medium bg-l3-chip text-l3-muted">
-                        #{story.id} · Historia
-                      </span>
-                    )}
-                  </div>
-
-                  <h2 className="font-semibold text-sm md:text-base text-l3-paper mb-1 line-clamp-2">
-                    {story.title}
-                  </h2>
-
-                  <p className="text-[11px] md:text-xs text-l3-muted mb-3 line-clamp-3">
-                    {story.description
-                      ? `${story.description.slice(0, 140)}${
-                          story.description.length > 140 ? "..." : ""
-                        }`
-                      : "Sin descripción por el momento."}
-                  </p>
-
-                  <div className="flex justify-between items-center text-[11px] md:text-xs text-l3-muted">
-                    <span>{story.author?.name || "Autor desconocido"}</span>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      )}
+        return (
+          <StoryCarousel
+            key={genre.id}
+            title={`Historias de ${genre.name}`}
+            description={`Sumérgete en lo mejor del género ${genre.name.toLowerCase()}.`}
+            stories={genreStories}
+          />
+        );
+      })}
     </div>
   );
 }

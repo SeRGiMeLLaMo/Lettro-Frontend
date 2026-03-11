@@ -1,6 +1,6 @@
 import './Toolbar.css';
 
-const Toolbar = ({ functions, editorState, showSave = true }) => {
+const Toolbar = ({ functions, editorState }) => {
     return (
         <>
                 <nav className="Toolbar">
@@ -59,13 +59,11 @@ const Toolbar = ({ functions, editorState, showSave = true }) => {
 						</svg>
 					</button>
                     </div>
-                    {showSave && (
-                        <div className="right">
-                            <button type="button" aria-label="Guardar" onClick={functions.saveContent} className="btnGuardar">
-                                <span>Guardar</span>
-                            </button>
-                        </div>
-                    )}
+                    <div className="right">
+                    <button type="button" aria-label="Guardar" onClick={functions.saveContent} className="btnGuardar">
+						<span>Guardar</span>
+					</button>
+                    </div>
                 </nav>
         </>
     );

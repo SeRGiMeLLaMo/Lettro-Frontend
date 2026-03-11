@@ -100,3 +100,12 @@ button {
 .bg-l3-brown {
   background-color: var(--l3-brown);
 }
+
+/* Ocultar barra de desplazamiento manteniendo funcionalidad */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

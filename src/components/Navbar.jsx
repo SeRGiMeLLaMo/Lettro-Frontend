@@ -84,9 +84,37 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            <span className="px-3 py-1.5 text-sm rounded-full border border-l3-border text-l3-muted">
-              {user.username || user.email}
-            </span>
+            <Link
+              to={`/profile/${user.id}`}
+              className="flex items-center gap-2 text-l3-paper hover:text-l3-gold transition"
+            >
+              {user.photo ? (
+                  <img
+                    src={`http://127.0.0.1:8000/storage/${user.photo}`}
+                    alt="Avatar"
+                    style={{
+                      width: "60px",
+                      height: "60px",
+                      borderRadius: "20%",
+                      objectFit: "cover",
+                      border: "1px solid #7C3AED",
+                    }}
+                  />
+                ) : (
+                  <div 
+                    style={{
+                      width: "60px",
+                      height: "60px",
+                      borderRadius: "20%",
+                      border: "1px solid #7C3AED",
+                    }}
+                    className="bg-l3-purple flex items-center justify-center text-xl font-bold text-white"
+                  >
+                    {user.username?.charAt(0).toUpperCase()}
+                  </div>
+                )}
+              <span className="font-medium">{user.username}</span>
+            </Link>
             <button
               onClick={() => {
                 logout();

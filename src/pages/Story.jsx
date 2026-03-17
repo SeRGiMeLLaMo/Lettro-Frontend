@@ -15,6 +15,7 @@ export default function Story() {
   const [liked, setLiked] = useState(false);
   const [following, setFollowing] = useState(false);
   const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+  const STORAGE_URL = API_BASE.replace("/api", "/storage");
 
   useEffect(() => {
     const fetchStory = async () => {
@@ -159,6 +160,8 @@ export default function Story() {
 
   const chapters = story.chapters || [];
 
+  const isAuthor = user?.id && story?.author?.id && Number(user.id) === Number(story.author.id);
+
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-8">
       <div className="flex flex-row gap-8">
@@ -166,7 +169,7 @@ export default function Story() {
           <div className="w-full aspect-[2/3] rounded-2xl overflow-hidden shadow-md border border-l3-border bg-gradient-to-br from-l3-gold/40 to-l3-brown/30 flex items-center justify-center">
             {story.cover_image ? (
               <img
-                src={`http://127.0.0.1:8000/storage/${story.cover_image}`}
+                src={story.cover_image.startsWith("http") ? story.cover_image : `${STORAGE_URL}/${story.cover_image}`}
                 alt={story.title}
                 className="w-full h-full object-cover"
               />
@@ -251,10 +254,10 @@ export default function Story() {
                     {ch.title}
                   </Link>
 
-                  {user?.id && story?.author?.id && user.id === story.author.id && (
+                  {isAuthor && (
                     <div className="flex gap-2 flex-shrink-0">
                       <Link
-                        to={`/chapters/${ch.id}/edit`}
+                        to={`/stories/${story.id}/chapters/${ch.id}/edit`}
                         className="p-1.5 rounded-lg bg-l3-gold text-white hover:opacity-90 transition-all shadow-sm flex items-center justify-center"
                         title="Editar capítulo"
                       >

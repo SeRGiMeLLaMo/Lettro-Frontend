@@ -3,6 +3,7 @@ import axios from "axios";
 import StoryCarousel from "../components/StoryCarousel";
 
 export default function Home() {
+  const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
   const [stories, setStories] = useState([]);
   const [genres, setGenres] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,18 +13,16 @@ export default function Home() {
     const fetchData = async () => {
       try {
         const [storiesRes, genresRes] = await Promise.all([
-          axios.get("http://localhost:8000/api/stories", {
+          axios.get(`${API_BASE}/stories`, {
             headers: { Accept: "application/json" },
           }),
-          axios.get("http://localhost:8000/api/genres", {
+          axios.get(`${API_BASE}/genres`, {
             headers: { Accept: "application/json" },
           }),
         ]);
 
-        // Limitar a 25 historias máximo en total si fuera necesario, 
-        // pero aquí las usaremos para filtrar por género.
-        setStories(storiesRes.data.slice(0, 25));
-        setGenres(genresRes.data);
+        setStories(storiesRes.data || []);
+        setGenres(genresRes.data || []);
       } catch (err) {
         console.error(err);
         setError("No se pudieron cargar las historias.");

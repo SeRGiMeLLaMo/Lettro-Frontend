@@ -92,6 +92,7 @@
     
       const API_BASE =
         import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+      const STORAGE_URL = API_BASE.replace("/api", "/storage");
     
       useEffect(() => {
         axios
@@ -135,7 +136,39 @@
         if (!viewer || viewer.id !== Number(id)) return;
         navigate(`/stories/${storyId}/new-chapter`);
       };
-    
+
+      const handleDeleteChapter = async (storyId, chapterId) => {
+        if (!window.confirm("¿Estás seguro de que quieres eliminar este capítulo?")) return;
+        
+        try {
+          await axios.delete(`${API_BASE}/chapters/${chapterId}`, {
+            headers: {
+              Accept: "application/json",
+              Authorization: token ? `Bearer ${token}` : "",
+            },
+            withCredentials: true,
+          });
+
+          // Actualizar el estado local para quitar el capítulo
+          setUser((prev) => {
+            if (!prev) return prev;
+            const updatedStories = (prev.stories || []).map((s) => {
+              if (s.id === storyId) {
+                return {
+                  ...s,
+                  chapters: (s.chapters || []).filter((ch) => ch.id !== chapterId),
+                };
+              }
+              return s;
+            });
+            return { ...prev, stories: updatedStories };
+          });
+        } catch (error) {
+          console.error(error);
+          alert("No se pudo eliminar el capítulo.");
+        }
+      };
+
       const handleToggleFollow = async () => {
         if (!viewer) {
           navigate("/register");
@@ -168,7 +201,7 @@
           {/* HEADER PERFIL */}
           <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
             <img
-              src={user.photo ? `http://127.0.0.1:8000/storage/${user.photo}` : "/perfilpredeterminado.png"}
+              src={user.photo ? (user.photo.startsWith("http") ? user.photo : `${STORAGE_URL}/${user.photo}`) : "/perfilpredeterminado.png"}
               alt="Foto perfil"
               style={{
                 width: "60px",
@@ -262,9 +295,34 @@
                       gap: "10px",
                     }}
                   >
-                    <div>
-                      <h3>{story.title}</h3>
-                      <p>{likesCount} me gustas</p>
+                    <div style={{ display: "flex", gap: "15px", alignItems: "center" }}>
+                      <div 
+                        style={{
+                          width: "50px",
+                          height: "75px",
+                          borderRadius: "6px",
+                          overflow: "hidden",
+                          border: "1px solid #ddd",
+                          background: "#f0f0f0",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center"
+                        }}
+                      >
+                        {story.cover_image ? (
+                          <img 
+                            src={story.cover_image.startsWith("http") ? story.cover_image : `${STORAGE_URL}/${story.cover_image}`} 
+                            alt={story.title} 
+                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                          />
+                        ) : (
+                          <span style={{ fontSize: "10px", color: "#999", textAlign: "center" }}>Sin portada</span>
+                        )}
+                      </div>
+                      <div>
+                        <h3 style={{ margin: "0 0 5px 0" }}>{story.title}</h3>
+                        <p style={{ margin: 0, fontSize: "0.9rem", color: "#666" }}>{likesCount} me gustas</p>
+                      </div>
                     </div>
                     <div style={{ display: "flex", gap: "8px" }}>
                       {viewer?.id === Number(id) && (
@@ -273,20 +331,22 @@
                             type="button"
                             onClick={() => navigate(`/stories/${story.id}/edit`)}
                             style={{
-                              padding: "6px 10px",
-                              borderRadius: "4px",
-                              border: "1px solid #007bff",
-                              background: "white",
-                              color: "#007bff",
+                              padding: "6px 12px",
+                              borderRadius: "8px",
+                              border: "1px solid #7C3AED",
+                              background: "transparent",
+                              color: "#7C3AED",
                               fontSize: "0.85rem",
+                              fontWeight: "600"
                             }}
+                            className="hover:bg-l3-purple hover:text-white transition"
                           >
                             Editar
                           </button>
                           <button
                             type="button"
                             onClick={async () => {
-                              if (!window.confirm("¿Seguro que quieres eliminar esta historia?")) return;
+                              if (!window.confirm("¿Estás seguro de que quieres eliminar esta historia?")) return;
                               try {
                                 await axios.delete(`${API_BASE}/stories/${story.id}`, {
                                   headers: {
@@ -306,13 +366,15 @@
                               }
                             }}
                             style={{
-                              padding: "6px 10px",
-                              borderRadius: "4px",
+                              padding: "6px 12px",
+                              borderRadius: "8px",
                               border: "1px solid #dc3545",
                               background: "#dc3545",
                               color: "white",
                               fontSize: "0.85rem",
+                              fontWeight: "600"
                             }}
+                            className="hover:opacity-80 transition"
                           >
                             Eliminar
                           </button>
@@ -322,13 +384,15 @@
                         type="button"
                         onClick={() => toggleStoryDropdown(story.id)}
                         style={{
-                          padding: "6px 10px",
-                          borderRadius: "4px",
+                          padding: "6px 12px",
+                          borderRadius: "8px",
                           border: "1px solid #6c757d",
-                          background: isOpen ? "#6c757d" : "white",
+                          background: isOpen ? "#6c757d" : "transparent",
                           color: isOpen ? "white" : "#6c757d",
                           fontSize: "0.85rem",
+                          fontWeight: "600"
                         }}
+                        className="hover:bg-gray-600 hover:text-white transition"
                       >
                         {isOpen ? "Ocultar capítulos" : "Ver capítulos"}
                       </button>
@@ -346,9 +410,57 @@
                           }}
                         >
                           {chapters.map((ch) => (
-                            <li key={ch.id}>
-                              {ch.order ? `${ch.order}. ` : ""}
-                              {ch.title}
+                            <li 
+                              key={ch.id}
+                              style={{ 
+                                display: "flex", 
+                                justifyContent: "space-between", 
+                                alignItems: "center",
+                                padding: "4px 0",
+                                borderBottom: "1px solid #eee"
+                              }}
+                            >
+                              <span>
+                                {ch.order ? `${ch.order}. ` : ""}
+                                {ch.title}
+                              </span>
+
+                              {viewer?.id === Number(id) && (
+                                <div style={{ display: "flex", gap: "8px" }}>
+                                  <button
+                                    onClick={() => navigate(`/stories/${story.id}/chapters/${ch.id}/edit`)}
+                                    style={{
+                                      padding: "4px 8px",
+                                      fontSize: "0.75rem",
+                                      borderRadius: "6px",
+                                      border: "1px solid #7C3AED",
+                                      background: "transparent",
+                                      color: "#7C3AED",
+                                      cursor: "pointer",
+                                      fontWeight: "600"
+                                    }}
+                                    className="hover:bg-l3-purple hover:text-white transition"
+                                  >
+                                    Editar
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteChapter(story.id, ch.id)}
+                                    style={{
+                                      padding: "4px 8px",
+                                      fontSize: "0.75rem",
+                                      borderRadius: "6px",
+                                      border: "1px solid #dc3545",
+                                      background: "#dc3545",
+                                      color: "white",
+                                      cursor: "pointer",
+                                      fontWeight: "600"
+                                    }}
+                                    className="hover:opacity-80 transition"
+                                  >
+                                    Eliminar
+                                  </button>
+                                </div>
+                              )}
                             </li>
                           ))}
                         </ul>

@@ -4,6 +4,9 @@ import { useAuth } from "../hooks/useAuth.js";
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+  const STORAGE_URL = API_BASE.replace("/api", "/storage");
+
   const baseLink =
     "inline-flex items-center text-sm md:text-base text-l3-muted hover:text-l3-gold transition px-2 md:px-3 py-1 rounded-full whitespace-nowrap mx-2 md:mx-3";
 
@@ -90,7 +93,7 @@ export default function Navbar() {
             >
               {user.photo ? (
                   <img
-                    src={`http://127.0.0.1:8000/storage/${user.photo}`}
+                    src={user.photo.startsWith("http") ? user.photo : `${STORAGE_URL}/${user.photo}`}
                     alt="Avatar"
                     style={{
                       width: "60px",

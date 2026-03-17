@@ -10,6 +10,7 @@ import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CreateChapter from "./pages/CreateChapter";
+import EditChapter from "./pages/EditChapter";
 import ChapterView from "./pages/ChapterView";
 
 
@@ -30,7 +31,8 @@ return (
 <Route path="/login" element={<Login />} />
 <Route path="/register" element={<Register />} />
 <Route path="/stories/:id/new-chapter" element={<CreateChapter />} />
-<Route path="/chapters/:id" element={<ChapterView />} />
+        <Route path="/stories/:storyId/chapters/:chapterId/edit" element={<EditChapter />} />
+        <Route path="/chapters/:id" element={<ChapterView />} />
 
 </Routes>
 </div>

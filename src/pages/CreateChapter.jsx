@@ -140,7 +140,13 @@ export default function CreateChapter() {
 
         <div className="w-[80vw] max-w-[1000px] mx-auto flex justify-center">
           <button
-            className="bg-black text-white px-6 py-3 rounded-lg"
+            type="submit"
+            className="btnGuardar"
+            style={{ 
+              padding: '10px 24px', 
+              fontSize: '16px',
+              marginTop: '20px'
+            }}
             disabled={loading}
           >
             {loading ? "Guardando..." : "Guardar capítulo"}

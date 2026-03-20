@@ -2,13 +2,11 @@ import './Tiptap.css';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useMemo } from "react";
-import Underline from "@tiptap/extension-underline";
 import Placeholder from "@tiptap/extension-placeholder";
 
 const Tiptap = ({ value = "", onChange, onReady, placeholder = "Aquí comienza tu historia..." }) => {
     const extensions = useMemo(() => [
-        StarterKit,
-        Underline,
+        StarterKit.configure(),
         Placeholder.configure({
             placeholder,
             showOnlyWhenEditable: true,

@@ -31,6 +31,7 @@ export default function EditStory() {
   const [loading, setLoading] = useState(false);
   const [loadingInitial, setLoadingInitial] = useState(true);
   const [errors, setErrors] = useState(null);
+  const [preview, setPreview] = useState(null);
 
   // 1) Cargar datos de la historia al entrar
   useEffect(() => {
@@ -45,9 +46,13 @@ export default function EditStory() {
         setForm({
           title: story.title || "",
           description: story.description || "",
-          cover_image: null, // la imagen actual ya está en el servidor; solo cambiaremos si el usuario sube otra
+          cover_image: null, 
           genres: (story.genres || []).map((g) => g.id),
         });
+
+        if (story.cover_image) {
+          setPreview(`http://127.0.0.1:8000/storage/${story.cover_image}`);
+        }
       } catch (error) {
         console.error(error);
         alert("No se pudo cargar la historia.");
@@ -67,10 +72,14 @@ export default function EditStory() {
   };
 
   const handleImage = (e) => {
-    setForm({
-      ...form,
-      cover_image: e.target.files[0],
-    });
+    const file = e.target.files[0];
+    if (file) {
+      setForm({
+        ...form,
+        cover_image: file,
+      });
+      setPreview(URL.createObjectURL(file));
+    }
   };
 
   const toggleGenre = (genreId) => {
@@ -183,14 +192,23 @@ export default function EditStory() {
           {/* IMAGEN NUEVA (opcional) */}
           <div>
             <label className="block mb-1 text-gray-300">
-              Cambiar imagen de portada (opcional)
+              Imagen de portada
             </label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImage}
-              className="w-full text-gray-300"
-            />
+            <div className="flex items-center gap-4 mb-3">
+              <div className="w-24 h-32 bg-gray-900 border border-purple-900/30 rounded-lg overflow-hidden flex items-center justify-center">
+                {preview ? (
+                  <img src={preview} alt="Portada" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-gray-500 text-xs text-center px-2">Sin portada</span>
+                )}
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImage}
+                className="flex-1 text-gray-300 text-sm"
+              />
+            </div>
           </div>
 
           {/* GÉNEROS */}

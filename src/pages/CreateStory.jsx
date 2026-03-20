@@ -52,12 +52,19 @@ export default function CreateStory() {
   };
 
 
+  // Estado para previsualizar la imagen
+  const [preview, setPreview] = useState(null);
+
   // Se ejecuta cuando el usuario selecciona una imagen
   const handleImage = (e) => {
-    setForm({ 
-      ...form, 
-      cover_image: e.target.files[0] // guardamos el archivo
-    });
+    const file = e.target.files[0];
+    if (file) {
+      setForm({ 
+        ...form, 
+        cover_image: file
+      });
+      setPreview(URL.createObjectURL(file)); // Crea una URL temporal para verla
+    }
   };
 
 
@@ -197,12 +204,21 @@ export default function CreateStory() {
             <label className="block mb-1 text-gray-300">
               Imagen de portada
             </label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImage}
-              className="w-full text-gray-300"
-            />
+            <div className="flex items-center gap-4 mb-3">
+              <div className="w-24 h-32 bg-gray-900 border border-purple-900/30 rounded-lg overflow-hidden flex items-center justify-center">
+                {preview ? (
+                  <img src={preview} alt="Portada" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-gray-500 text-xs text-center px-2">Sin portada</span>
+                )}
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImage}
+                className="flex-1 text-gray-300 text-sm"
+              />
+            </div>
           </div>
 
           {/* GÉNEROS */}

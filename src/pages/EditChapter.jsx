@@ -6,26 +6,21 @@ import { useEditorState } from "@tiptap/react";
 import Toolbar from "../components/Toolbar";
 import { useAuth } from "../hooks/useAuth.js";
 
-export default function CreateChapter() {
-  const { id } = useParams();       // id de la historia
+export default function EditChapter() {
+  const { storyId, chapterId } = useParams();
   const navigate = useNavigate();
   const { token, user } = useAuth();
   const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
-
-  useEffect(() => {
-    if (!token || !user) {
-      alert("Debes iniciar sesión para crear capítulos.");
-      navigate("/login");
-    }
-  }, [token, user, navigate]);
 
   const [form, setForm] = useState({
     title: "",
     content: "",
   });
   const [loading, setLoading] = useState(false);
+  const [loadingInitial, setLoadingInitial] = useState(true);
   const [errors, setErrors] = useState(null);
   const [editor, setEditor] = useState(null);
+
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
@@ -56,14 +51,37 @@ export default function CreateChapter() {
       };
     },
   });
-  const formRef = useRef(null);
+
+  useEffect(() => {
+    if (!token || !user) {
+      alert("Debes iniciar sesión para editar capítulos.");
+      navigate("/login");
+      return;
+    }
+
+    const fetchChapter = async () => {
+      try {
+        const res = await axios.get(`${API_BASE}/chapters/${chapterId}`, {
+          headers: { Accept: "application/json" },
+        });
+        setForm({
+          title: res.data.title || "",
+          content: res.data.content || "",
+        });
+      } catch (err) {
+        console.error(err);
+        alert("No se pudo cargar el capítulo.");
+        navigate(`/story/${storyId}`);
+      } finally {
+        setLoadingInitial(false);
+      }
+    };
+
+    fetchChapter();
+  }, [chapterId, storyId, token, user, navigate, API_BASE]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!id) {
-      alert("No se encontró el ID de la historia.");
-      return;
-    }
     setLoading(true);
     setErrors(null);
 
@@ -73,31 +91,44 @@ export default function CreateChapter() {
     }
 
     try {
-      await axios.post(
-        `${API_BASE}/chapters`,
+      await axios.put(
+        `${API_BASE}/chapters/${chapterId}`,
         {
           title: form.title,
           content: form.content,
-          story_id: id, // aquí se enlaza al {id} historia
         },
         {
           headers,
           withCredentials: true,
         }
       );
-
-      // opcional: volver a la página de la historia
-      navigate(`/story/${id}`);
+      navigate(`/story/${storyId}`);
     } catch (error) {
       setErrors(error.response?.data?.errors);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
+
+  if (loadingInitial) {
+    return (
+      <div className="max-w-3xl mx-auto p-12 text-center">
+        <p className="text-gray-500 animate-pulse">Cargando capítulo...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Crear capítulo</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Editar capítulo</h1>
+        <button 
+          onClick={() => navigate(-1)}
+          className="text-gray-500 hover:text-gray-700 text-sm"
+        >
+          Cancelar
+        </button>
+      </div>
 
       {errors && (
         <div className="bg-red-500/20 border border-red-500 p-3 rounded mb-4">
@@ -111,7 +142,7 @@ export default function CreateChapter() {
         </div>
       )}
 
-      <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
         {/* TÍTULO */}
         <div className="w-[80vw] max-w-[1000px] mx-auto text-center">
           <label className="block mb-2 font-medium">Título</label>
@@ -124,9 +155,8 @@ export default function CreateChapter() {
           />
         </div>
 
-        {/* WRAPPER: misma anchura que el editor para toolbar + editor */}
+        {/* EDITOR */}
         <div className="w-[80vw] max-w-[1000px] mx-auto">
-          {/* TOOLBAR */}
           {editor && (
             <Toolbar
               showSave={false}
@@ -144,16 +174,15 @@ export default function CreateChapter() {
               editorState={editorState}
             />
           )}
-          {/* EDITOR */}
           <TextEditor
             value={form.content}
             onChange={(content) => setForm({ ...form, content })}
             onReady={(ed) => setEditor(ed)}
-            placeholder="Aquí comienza tu historia..."
+            placeholder="Modifica tu capítulo..."
           />
         </div>
 
-        <div className="w-[80vw] max-w-[1000px] mx-auto flex justify-center">
+        <div className="w-[80vw] max-w-[1000px] mx-auto flex justify-center gap-4">
           <button
             type="submit"
             className="btnGuardar"
@@ -164,7 +193,7 @@ export default function CreateChapter() {
             }}
             disabled={loading}
           >
-            {loading ? "Guardando..." : "Guardar capítulo"}
+            {loading ? "Guardando..." : "Guardar cambios"}
           </button>
         </div>
       </form>

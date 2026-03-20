@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function StoryCarousel({ title, description, stories }) {
   const carouselRef = useRef(null);
+  const STORAGE_URL = (import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api").replace("/api", "/storage");
 
   const scrollCarousel = (direction) => {
     const el = carouselRef.current;
@@ -11,7 +12,7 @@ export default function StoryCarousel({ title, description, stories }) {
     el.scrollBy({ left: direction * amount, behavior: "smooth" });
   };
 
-  if (stories.length === 0) return null;
+  if (!stories || stories.length === 0) return null;
 
   return (
     <div className="mb-16">
@@ -33,7 +34,9 @@ export default function StoryCarousel({ title, description, stories }) {
         >
           {stories.map((story) => {
             const coverUrl = story.cover_image
-              ? `http://localhost:8000/storage/${story.cover_image}`
+              ? story.cover_image.startsWith("http")
+                ? story.cover_image
+                : `${STORAGE_URL}/${story.cover_image}`
               : null;
 
             return (

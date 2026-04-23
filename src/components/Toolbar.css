@@ -1,9 +1,10 @@
- .Toolbar {
+.Toolbar {
    display: flex;
    align-items: center;
    justify-content: space-between;
    gap: 12px;
    margin-bottom: 0;
+   padding: 10px 15px;
  }
  
  .Toolbar .left {

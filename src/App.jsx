@@ -1,17 +1,17 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-import Story from "./pages/Story";
+import Story from "./pages/story/Story";
 import Search from "./pages/Search";
-import CreateStory from "./pages/CreateStory";
-import EditStory from "./pages/EditStory";
-import EditProfile from "./pages/EditProfile";
-import Profile from "./pages/Profile";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import CreateChapter from "./pages/CreateChapter";
-import EditChapter from "./pages/EditChapter";
-import ChapterView from "./pages/ChapterView";
+import CreateStory from "./pages/story/CreateStory";
+import EditStory from "./pages/story/EditStory";
+import EditProfile from "./pages/profileloginregister/EditProfile";
+import Profile from "./pages/profileloginregister/Profile";
+import Login from "./pages/profileloginregister/Login";
+import Register from "./pages/profileloginregister/Register";
+import CreateChapter from "./pages/chapter/CreateChapter";
+import EditChapter from "./pages/chapter/EditChapter";
+import ChapterView from "./pages/chapter/ChapterView";
 
 
 

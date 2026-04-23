@@ -1,30 +1,42 @@
 .Tiptap {
-    width: 80vw;
-    max-width: 1000px;
-    height: 90vh;
-    overflow: auto;
-    margin: 40px auto;
-    margin-top: 0;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 5px;
-    min-height: 50vh;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 10px;
+    background-color: transparent;
+    min-height: 400px;
     z-index: 0;
-    outline: 2px solid rgb(26, 130, 199);
-    
-    ul, li {
-        margin-left: 20px;
-    }
+    outline: none !important;
+}
 
-    img{
-        max-width: 50%;
-    }
-    
+.Tiptap main {
+    outline: none !important;
 }
 
 .ProseMirror {
-    outline: none;
-    border-radius: 5px;
+    outline: none !important;
+    border: none !important;
 }
 
-    
+.ProseMirror p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: #adb5bd;
+    pointer-events: none;
+    height: 0;
+}
+
+.Tiptap ul, .Tiptap ol {
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.Tiptap li {
+    margin-bottom: 0.5rem;
+}
+
+.Tiptap img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}

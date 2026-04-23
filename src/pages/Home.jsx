@@ -35,50 +35,71 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      {/* Sección de Historias Recientes */}
-      <StoryCarousel
-        title="Historias recientes"
-        description="Descubre los últimos libros publicados por la comunidad."
-        stories={stories}
-      />
-
-      {loading && (
-        <div className="flex justify-center py-20">
-          <p className="text-l3-muted animate-pulse font-medium text-lg">
-            Cargando biblioteca...
+    <div style={{ backgroundColor: "#f5ebe0", minHeight: "calc(100vh - 80px)", padding: "3rem 1rem", fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
+      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+        
+        {/* Banner/Hero Header Principal */}
+        <div style={{ textAlign: "center", marginBottom: "4rem" }}>
+          <h1 style={{ fontSize: "2.5rem", fontWeight: "800", color: "#3b2f2a", marginBottom: "0.5rem" }}>
+            Bienvenido a <span style={{ color: "#d9a05b" }}>L3ttro</span>
+          </h1>
+          <p style={{ fontSize: "1.1rem", color: "#7b6f67", maxWidth: "600px", margin: "0 auto" }}>
+            Explora un mundo infinito de historias. Descubre los últimos libros publicados por la comunidad y sumérgete en tus géneros favoritos.
           </p>
         </div>
-      )}
 
-      {!loading && error && (
-        <p className="text-red-400 mb-4 text-center bg-red-50 py-4 rounded-xl border border-red-100">
-          {error}
-        </p>
-      )}
+        {/* Sección de Historias Recientes */}
+        <StoryCarousel
+          title="Novedades destacadas"
+          description="Lecturas recién salidas del horno"
+          stories={stories}
+        />
 
-      {!loading && !error && stories.length === 0 && (
-        <p className="text-gray-400 mb-4 text-center py-20 bg-l3-card/30 rounded-3xl border border-dashed border-l3-border">
-          Todavía no hay historias creadas.
-        </p>
-      )}
+        {loading && (
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "4rem 0", color: "#d9a05b" }}>
+            <div style={{ animation: "spin 1s linear infinite", marginBottom: "1rem" }}>
+              <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+            </div>
+            <p style={{ fontSize: "1.1rem", fontWeight: "500", color: "#8b5a2b" }}>
+              Abriendo estanterías...
+            </p>
+          </div>
+        )}
 
-      {/* Carruseles por Género */}
-      {!loading && !error && genres.map((genre) => {
-        // Filtrar historias que tengan este género
-        const genreStories = stories.filter(story => 
-          story.genres?.some(g => g.id === genre.id)
-        );
+        {!loading && error && (
+          <div style={{ padding: "1.5rem", backgroundColor: "#fef2f2", border: "1px solid #fee2e2", borderRadius: "1rem", color: "#991b1b", textAlign: "center", marginBottom: "2rem" }}>
+            {error}
+          </div>
+        )}
 
-        return (
-          <StoryCarousel
-            key={genre.id}
-            title={`Historias de ${genre.name}`}
-            description={`Sumérgete en lo mejor del género ${genre.name.toLowerCase()}.`}
-            stories={genreStories}
-          />
-        );
-      })}
+        {!loading && !error && stories.length === 0 && (
+          <div style={{ textAlign: "center", padding: "5rem 2rem", backgroundColor: "#fff7ec", border: "1px dashed #d9a05b", borderRadius: "1.5rem", color: "#7b6f67" }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d9a05b" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ margin: "0 auto", marginBottom: "1rem", opacity: 0.5 }}><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-0-5H20"/></svg>
+            <p style={{ fontSize: "1.25rem", fontWeight: "500", color: "#3b2f2a", marginBottom: "0.5rem" }}>Todavía no hay historias creadas.</p>
+            <p style={{ fontSize: "1rem" }}>¡Anímate a ser el primero en publicar una!</p>
+          </div>
+        )}
+
+        {/* Carruseles por Género */}
+        {!loading && !error && genres.map((genre) => {
+          const genreStories = stories.filter(story => 
+            story.genres?.some(g => g.id === genre.id)
+          );
+
+          if (genreStories.length === 0) return null;
+
+          return (
+            <div key={genre.id} style={{ marginTop: "3rem", borderTop: "1px solid rgba(217,160,91,0.2)", paddingTop: "3rem" }}>
+              <StoryCarousel
+                title={`Explora: ${genre.name}`}
+                description={`Lo mejor del género ${genre.name.toLowerCase()}`}
+                stories={genreStories}
+              />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

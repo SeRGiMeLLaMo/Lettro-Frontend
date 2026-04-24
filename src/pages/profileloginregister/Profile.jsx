@@ -117,7 +117,6 @@ function Profile() {
         setUser((prev) => ({ ...prev, followers_count: res.data.followers_count }));
       }
     } catch (error) {
-    } catch (error) {
       console.error(error);
       toast.error("Debes iniciar sesión para seguir autores.");
     }

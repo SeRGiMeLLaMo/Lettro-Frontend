@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../hooks/useAuth.js";
+import { toast } from "react-hot-toast";
 
 function Profile() {
   const { id } = useParams();
@@ -90,7 +91,7 @@ function Profile() {
       });
     } catch (error) {
       console.error(error);
-      alert("No se pudo eliminar el capítulo.");
+      toast.error("No se pudo eliminar el capítulo.");
     }
   };
 
@@ -117,7 +118,7 @@ function Profile() {
       }
     } catch (error) {
       console.error(error);
-      alert("Debes iniciar sesión para seguir autores.");
+      toast.error("Debes iniciar sesión para seguir autores.");
     }
   };
 
@@ -307,7 +308,7 @@ function Profile() {
                               try {
                                 await axios.delete(`${API_BASE}/stories/${story.id}`, { headers: { Accept: "application/json", Authorization: token ? `Bearer ${token}` : "" }, withCredentials: true });
                                 setUser((prev) => prev ? { ...prev, stories: (prev.stories || []).filter((s) => s.id !== story.id) } : prev);
-                              } catch (error) { console.error(error); alert("No se pudo eliminar la historia."); }
+                              } catch (error) { console.error(error); toast.error("No se pudo eliminar la historia."); }
                             }}
                             style={{ padding: "0.4rem 0.8rem", borderRadius: "0.5rem", border: "none", background: "#ef4444", color: "#fff", fontSize: "0.8rem", fontWeight: "600", cursor: "pointer", transition: "all 0.2s ease" }}
                             onMouseOver={(e) => { e.currentTarget.style.backgroundColor = "#dc2626"; }}

@@ -12,13 +12,43 @@ import Register from "./pages/profileloginregister/Register";
 import CreateChapter from "./pages/chapter/CreateChapter";
 import EditChapter from "./pages/chapter/EditChapter";
 import ChapterView from "./pages/chapter/ChapterView";
+import { Toaster } from "react-hot-toast";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
-
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 export default function App() {
-return (
-<Router>
-<div className="min-h-screen bg-l3-bg text-l3-ink">
+  return (
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <Router>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: "#fff7ec",
+            color: "#3b2f2a",
+            border: "1px solid #e0d1c3",
+            borderRadius: "1rem",
+            boxShadow: "0 10px 25px rgba(139, 90, 43, 0.1)",
+            padding: "1rem",
+            fontSize: "0.95rem",
+          },
+          success: {
+            iconTheme: {
+              primary: "#d9a05b",
+              secondary: "#fff7ec",
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: "#8b5a2b",
+              secondary: "#fff7ec",
+            },
+          },
+        }}
+      />
+      <div className="min-h-screen bg-l3-bg text-l3-ink">
 <Navbar />
 <Routes>
 <Route path="/" element={<Home />} />
@@ -36,6 +66,7 @@ return (
 
 </Routes>
 </div>
-</Router>
-);
+      </Router>
+    </GoogleOAuthProvider>
+  );
 }

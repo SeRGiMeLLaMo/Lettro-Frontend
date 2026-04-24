@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../hooks/useAuth.js";
+import { toast } from "react-hot-toast";
 
 export default function EditProfile() {
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ export default function EditProfile() {
         }
       } catch (error) {
         console.error(error);
-        alert("No se pudo cargar tu perfil.");
+        toast.error("No se pudo cargar tu perfil.");
       } finally {
         setLoadingInitial(false);
       }
@@ -95,7 +96,7 @@ export default function EditProfile() {
         },
       });
 
-      alert("Perfil actualizado correctamente 🎉");
+      toast.success("Perfil actualizado correctamente 🎉");
       setUser(res.data); 
       navigate(`/profile/${res.data.id}`);
     } catch (error) {
@@ -103,7 +104,7 @@ export default function EditProfile() {
         setErrors(error.response.data.errors);
       } else {
         console.error(error);
-        alert("Ocurrió un error al actualizar el perfil.");
+        toast.error("Ocurrió un error al actualizar el perfil.");
       }
     } finally {
       setLoading(false);

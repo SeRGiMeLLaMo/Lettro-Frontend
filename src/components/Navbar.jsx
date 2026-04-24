@@ -57,26 +57,41 @@ export default function Navbar() {
           left: 0;
           width: 100%;
           height: calc(100vh - 75px);
-          background-color: #fff7ec;
+          background-color: #fffaf4;
           z-index: 999;
           display: flex;
           flex-direction: column;
-          padding: 2rem;
-          gap: 1.5rem;
+          padding: 1.5rem;
+          gap: 0.5rem;
           transform: translateX(100%);
-          transition: transform 0.3s ease-in-out;
+          transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
           border-top: 1px solid #e0d1c3;
+          overflow-y: auto;
+          box-shadow: -10px 0 30px rgba(139, 90, 43, 0.05);
         }
         .mobile-overlay.open {
           transform: translateX(0);
         }
         .mobile-link {
-          font-size: 1.25rem;
+          font-size: 1.1rem;
           color: #3b2f2a;
           text-decoration: none;
           font-weight: 600;
-          padding: 0.5rem 0;
-          border-bottom: 1px solid rgba(217, 160, 91, 0.1);
+          padding: 1rem 0.5rem;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          border-bottom: 1px solid rgba(224, 209, 195, 0.4);
+          transition: all 0.2s;
+        }
+        .mobile-link:active {
+          background-color: rgba(217, 160, 91, 0.05);
+          color: #d9a05b;
+        }
+        .mobile-link-arrow {
+          color: #d9a05b;
+          opacity: 0.5;
+          font-size: 1.2rem;
         }
       `}</style>
 
@@ -253,22 +268,82 @@ export default function Navbar() {
 
       {/* OVERLAY DEL MENÚ MÓVIL */}
       <div className={`mobile-overlay ${isMenuOpen ? "open" : ""}`} onClick={() => setIsMenuOpen(false)}>
-        <NavLink to="/" className="mobile-link" end>Inicio</NavLink>
-        <NavLink to="/search" className="mobile-link">Explorar libros</NavLink>
-        <NavLink to={user ? `/profile/${user.id}` : "/login"} className="mobile-link">Mi estantería</NavLink>
+        <div style={{ display: "flex", flexDirection: "column", marginBottom: "2rem" }}>
+          <NavLink to="/" className="mobile-link" end>
+            <span>Inicio</span>
+            <span className="mobile-link-arrow">›</span>
+          </NavLink>
+          <NavLink to="/search" className="mobile-link">
+            <span>Explorar libros</span>
+            <span className="mobile-link-arrow">›</span>
+          </NavLink>
+          <NavLink to={user ? `/profile/${user.id}` : "/login"} className="mobile-link">
+            <span>Mi estantería</span>
+            <span className="mobile-link-arrow">›</span>
+          </NavLink>
+        </div>
         
-        <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "1rem", paddingBottom: "2rem" }}>
           {!user ? (
             <>
-              <Link to="/login" className="mobile-link" style={{ textAlign: "center", border: "1px solid #e0d1c3", borderRadius: "0.5rem" }}>Entrar</Link>
-              <Link to="/register" className="mobile-link" style={{ textAlign: "center", backgroundColor: "#d9a05b", color: "#fff", borderRadius: "0.5rem" }}>Registrarse</Link>
+              <Link to="/login" style={{ 
+                textAlign: "center", 
+                border: "1px solid #d9a05b", 
+                color: "#d9a05b",
+                padding: "1rem",
+                borderRadius: "0.75rem",
+                textDecoration: "none",
+                fontWeight: "700",
+                fontSize: "1rem",
+                backgroundColor: "transparent"
+              }}>
+                Entrar
+              </Link>
+              <Link to="/register" style={{ 
+                textAlign: "center", 
+                backgroundColor: "#d9a05b", 
+                color: "#fff",
+                padding: "1.1rem",
+                borderRadius: "0.75rem",
+                textDecoration: "none",
+                fontWeight: "800",
+                fontSize: "1rem",
+                boxShadow: "0 8px 16px rgba(217, 160, 91, 0.2)"
+              }}>
+                Registrarse
+              </Link>
             </>
           ) : (
             <>
-              <Link to="/create-story" className="mobile-link" style={{ textAlign: "center", backgroundColor: "#d9a05b", color: "#fff", borderRadius: "0.5rem" }}>+ Nueva Historia</Link>
+              <Link to="/create-story" style={{ 
+                textAlign: "center", 
+                backgroundColor: "#d9a05b", 
+                color: "#fff",
+                padding: "1.1rem",
+                borderRadius: "0.75rem",
+                textDecoration: "none",
+                fontWeight: "800",
+                fontSize: "1rem",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "0.5rem",
+                boxShadow: "0 8px 16px rgba(217, 160, 91, 0.2)"
+              }}>
+                <span style={{ fontSize: "1.5rem", lineHeight: 0 }}>+</span> Nueva Historia
+              </Link>
               <button 
                 onClick={() => { logout(); navigate("/"); }}
-                style={{ background: "transparent", border: "1px solid #8b5a2b", color: "#8b5a2b", padding: "1rem", borderRadius: "0.5rem", fontWeight: "bold" }}
+                style={{ 
+                  background: "transparent", 
+                  border: "1px solid #e0d1c3", 
+                  color: "#7b6f67", 
+                  padding: "1rem", 
+                  borderRadius: "0.75rem", 
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  marginTop: "0.5rem"
+                }}
               >
                 Cerrar Sesión
               </button>

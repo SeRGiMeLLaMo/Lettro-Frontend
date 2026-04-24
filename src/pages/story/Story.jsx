@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../hooks/useAuth.js";
+import { toast } from "react-hot-toast";
 
 export default function Story() {
   const { id } = useParams();
@@ -75,7 +76,7 @@ export default function Story() {
       setLikesCount((c) => c + (nowLiked ? 1 : -1));
     } catch (err) {
       console.error(err);
-      alert("Necesitas iniciar sesión para dar me gusta.");
+      toast.error("Necesitas iniciar sesión para dar me gusta.");
     }
   };
 
@@ -94,7 +95,7 @@ export default function Story() {
       setFollowing(!!res.data?.following);
     } catch (err) {
       console.error(err);
-      alert("Debes iniciar sesión para seguir autores.");
+      toast.error("Debes iniciar sesión para seguir autores.");
     }
   };
 
@@ -114,7 +115,7 @@ export default function Story() {
       }));
     } catch (err) {
       console.error(err);
-      alert("No se pudo eliminar el capítulo.");
+      toast.error("No se pudo eliminar el capítulo.");
     }
   };
 

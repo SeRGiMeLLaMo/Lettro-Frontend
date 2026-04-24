@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../hooks/useAuth.js";
+import { GoogleLogin } from "@react-oauth/google";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -40,6 +41,29 @@ export default function Login() {
         err?.response?.data?.error ||
         "Error al iniciar sesión";
       setStatus({ loading: false, error: msg, success: "" });
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setStatus({ loading: true, error: "", success: "" });
+    try {
+      const res = await axios.post(`${API_BASE}/auth/google`, {
+        token: credentialResponse.credential,
+      });
+      const { user, token } = res.data;
+      if (user && token) {
+        setUser(user);
+        setToken(token);
+        setStatus({ loading: false, error: "", success: "Inicio de sesión con Google exitoso" });
+        navigate(`/profile/${user.id}`);
+      }
+    } catch (err) {
+      console.error(err);
+      setStatus({ 
+        loading: false, 
+        error: "Error al iniciar sesión con Google", 
+        success: "" 
+      });
     }
   };
 
@@ -177,6 +201,23 @@ export default function Login() {
               {status.loading ? "Entrando..." : "Entrar"}
             </button>
           </form>
+
+          <div style={{ margin: "1.5rem 0", display: "flex", alignItems: "center", gap: "1rem" }}>
+            <div style={{ flex: 1, height: "1px", backgroundColor: "#e0d1c3" }}></div>
+            <span style={{ fontSize: "0.8rem", color: "#7b6f67", fontWeight: "600" }}>O CONTINÚA CON</span>
+            <div style={{ flex: 1, height: "1px", backgroundColor: "#e0d1c3" }}></div>
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => setStatus({ loading: false, error: "Error en la autenticación de Google", success: "" })}
+              theme="outline"
+              shape="pill"
+              text="signin_with"
+              locale="es"
+            />
+          </div>
 
           {status.error && (
             <div style={{ marginTop: "1.5rem", padding: "0.75rem", backgroundColor: "#fef2f2", border: "1px solid #fee2e2", borderRadius: "0.5rem", display: "flex", alignItems: "flex-start", gap: "0.5rem" }}>

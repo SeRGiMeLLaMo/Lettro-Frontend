@@ -5,6 +5,7 @@ import TextEditor from "../../components/Tiptap";
 import { useEditorState } from "@tiptap/react";
 import Toolbar from "../../components/Toolbar";
 import { useAuth } from "../../hooks/useAuth.js";
+import { toast } from "react-hot-toast";
 
 export default function CreateChapter() {
   const { id } = useParams();
@@ -22,7 +23,7 @@ export default function CreateChapter() {
 
   useEffect(() => {
     if (!token || !user) {
-      alert("Debes iniciar sesión para crear capítulos.");
+      toast.error("Debes iniciar sesión para crear capítulos.");
       navigate("/login");
     }
   }, [token, user, navigate]);
@@ -61,7 +62,7 @@ export default function CreateChapter() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!id) {
-      alert("No se encontró el ID de la historia.");
+      toast.error("No se encontró el ID de la historia.");
       return;
     }
     setLoading(true);
@@ -86,7 +87,7 @@ export default function CreateChapter() {
         }
       );
 
-      alert("Capítulo creado correctamente 🎉");
+      toast.success("Capítulo creado correctamente 🎉");
       navigate(`/story/${id}`);
     } catch (error) {
       setErrors(error.response?.data?.errors);

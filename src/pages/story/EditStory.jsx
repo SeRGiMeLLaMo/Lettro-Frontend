@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../hooks/useAuth.js";
+import { toast } from "react-hot-toast";
 
 const genresList = [
   { id: 1, name: "Fantasía" },
@@ -55,7 +56,7 @@ export default function EditStory() {
         }
       } catch (error) {
         console.error(error);
-        alert("No se pudo cargar la historia.");
+        toast.error("No se pudo cargar la historia.");
       } finally {
         setLoadingInitial(false);
       }
@@ -127,7 +128,7 @@ export default function EditStory() {
         }
       );
 
-      alert("Story actualizada correctamente 🎉");
+      toast.success("Story actualizada correctamente 🎉");
       const backId = user?.id ? user.id : undefined;
       navigate(backId ? `/profile/${backId}` : `/`);
     } catch (error) {

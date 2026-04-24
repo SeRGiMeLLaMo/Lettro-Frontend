@@ -5,6 +5,7 @@ import TextEditor from "../../components/Tiptap";
 import { useEditorState } from "@tiptap/react";
 import Toolbar from "../../components/Toolbar";
 import { useAuth } from "../../hooks/useAuth.js";
+import { toast } from "react-hot-toast";
 
 export default function EditChapter() {
   const { storyId, chapterId } = useParams();
@@ -54,7 +55,7 @@ export default function EditChapter() {
 
   useEffect(() => {
     if (!token || !user) {
-      alert("Debes iniciar sesión para editar capítulos.");
+      toast.error("Debes iniciar sesión para editar capítulos.");
       navigate("/login");
       return;
     }
@@ -70,7 +71,7 @@ export default function EditChapter() {
         });
       } catch (err) {
         console.error(err);
-        alert("No se pudo cargar el capítulo.");
+        toast.error("No se pudo cargar el capítulo.");
         navigate(`/story/${storyId}`);
       } finally {
         setLoadingInitial(false);
@@ -102,7 +103,7 @@ export default function EditChapter() {
           withCredentials: true,
         }
       );
-      alert("Capítulo actualizado correctamente 🎉");
+      toast.success("Capítulo actualizado correctamente 🎉");
       navigate(`/story/${storyId}`);
     } catch (error) {
       setErrors(error.response?.data?.errors);

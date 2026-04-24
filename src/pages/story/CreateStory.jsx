@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const genresList = [
   { id: 1, name: "Fantasía" },
@@ -66,7 +67,7 @@ export default function CreateStory() {
   const handleSubmit = async (e) => {
     e.preventDefault(); 
     if (!user || !token) {
-      alert("Debes iniciar sesión para crear historias.");
+      toast.error("Debes iniciar sesión para crear historias.");
       navigate("/login");
       return;
     }
@@ -95,7 +96,7 @@ export default function CreateStory() {
         withCredentials: true,
       });
 
-      alert("Story creada correctamente 🎉");
+      toast.success("Story creada correctamente 🎉");
       navigate(user?.id ? `/profile/${user.id}` : "/");
     } catch (error) {
       if (error.response && error.response.data.errors) {

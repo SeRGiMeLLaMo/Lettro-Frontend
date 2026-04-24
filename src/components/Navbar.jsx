@@ -61,25 +61,26 @@ export default function Navbar() {
           z-index: 999;
           display: flex;
           flex-direction: column;
-          padding: 2rem 1.5rem;
-          gap: 0.5rem;
+          padding: 2rem;
+          box-sizing: border-box; /* CRITICO para el centrado */
           transform: translateX(100%);
           transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
           border-top: 1px solid #e0d1c3;
           overflow-y: auto;
           box-shadow: -10px 0 30px rgba(139, 90, 43, 0.05);
-          text-align: center;
         }
         .mobile-overlay.open {
           transform: translateX(0);
         }
         .mobile-link {
-          font-size: 1.2rem;
+          font-size: 1.25rem;
           color: #3b2f2a;
           text-decoration: none;
           font-weight: 600;
-          padding: 1.2rem 0.5rem;
+          padding: 1.25rem 0;
+          width: 100%;
           display: block;
+          text-align: center;
           border-bottom: 1px solid rgba(224, 209, 195, 0.4);
           transition: all 0.2s;
         }
@@ -262,13 +263,13 @@ export default function Navbar() {
 
       {/* OVERLAY DEL MENÚ MÓVIL */}
       <div className={`mobile-overlay ${isMenuOpen ? "open" : ""}`} onClick={() => setIsMenuOpen(false)}>
-        <div style={{ display: "flex", flexDirection: "column", marginBottom: "2rem" }}>
+        <div style={{ display: "flex", flexDirection: "column", marginBottom: "2rem", width: "100%" }}>
           <NavLink to="/" className="mobile-link" end>Inicio</NavLink>
           <NavLink to="/search" className="mobile-link">Explorar libros</NavLink>
           <NavLink to={user ? `/profile/${user.id}` : "/login"} className="mobile-link">Mi estantería</NavLink>
         </div>
         
-        <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "1rem", paddingBottom: "2rem" }}>
+        <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "1rem", paddingBottom: "2rem", width: "100%" }}>
           {!user ? (
             <>
               <Link to="/login" style={{ 
@@ -279,8 +280,11 @@ export default function Navbar() {
                 borderRadius: "0.75rem",
                 textDecoration: "none",
                 fontWeight: "700",
-                fontSize: "1rem",
-                backgroundColor: "transparent"
+                fontSize: "1.1rem",
+                backgroundColor: "transparent",
+                width: "100%",
+                display: "block",
+                boxSizing: "border-box"
               }}>
                 Entrar
               </Link>
@@ -292,8 +296,11 @@ export default function Navbar() {
                 borderRadius: "0.75rem",
                 textDecoration: "none",
                 fontWeight: "800",
-                fontSize: "1rem",
-                boxShadow: "0 8px 16px rgba(217, 160, 91, 0.2)"
+                fontSize: "1.1rem",
+                boxShadow: "0 8px 16px rgba(217, 160, 91, 0.2)",
+                width: "100%",
+                display: "block",
+                boxSizing: "border-box"
               }}>
                 Registrarse
               </Link>
@@ -308,12 +315,14 @@ export default function Navbar() {
                 borderRadius: "0.75rem",
                 textDecoration: "none",
                 fontWeight: "800",
-                fontSize: "1rem",
+                fontSize: "1.1rem",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 gap: "0.5rem",
-                boxShadow: "0 8px 16px rgba(217, 160, 91, 0.2)"
+                boxShadow: "0 8px 16px rgba(217, 160, 91, 0.2)",
+                width: "100%",
+                boxSizing: "border-box"
               }}>
                 <span style={{ fontSize: "1.5rem", lineHeight: 0 }}>+</span> Nueva Historia
               </Link>
@@ -323,11 +332,13 @@ export default function Navbar() {
                   background: "transparent", 
                   border: "1px solid #e0d1c3", 
                   color: "#7b6f67", 
-                  padding: "1rem", 
+                  padding: "1.1rem", 
                   borderRadius: "0.75rem", 
                   fontWeight: "600",
                   cursor: "pointer",
-                  marginTop: "0.5rem"
+                  marginTop: "0.5rem",
+                  width: "100%",
+                  boxSizing: "border-box"
                 }}
               >
                 Cerrar Sesión

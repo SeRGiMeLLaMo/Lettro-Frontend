@@ -67,73 +67,29 @@ export default function Login() {
     }
   };
 
-  const inputStyle = {
-    width: "100%",
-    boxSizing: "border-box",
-    padding: "0.75rem 0.5rem 0.75rem 2.25rem", // pl-9
-    backgroundColor: "transparent",
-    border: "none",
-    borderBottom: "2px solid #e0d1c3",
-    outline: "none",
-    color: "#3b2f2a",
-    fontSize: "1rem",
-    transition: "border-color 0.2s ease",
-  };
-
-  const iconStyle = {
-    position: "absolute",
-    left: "0.25rem",
-    top: "50%",
-    transform: "translateY(-50%)",
-    pointerEvents: "none",
-    opacity: 0.6,
-  };
-
   return (
-    <div style={{ 
-      display: "flex", 
-      alignItems: "center", 
-      justifyContent: "center", 
-      minHeight: "calc(100vh - 80px)", 
-      padding: "2rem 1rem",
-      backgroundColor: "#f5ebe0",
-      fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
-    }}>
-      <div 
-        style={{ 
-          width: "100%",
-          maxWidth: "450px", 
-          margin: "0 auto", 
-          padding: "2.5rem 2rem", 
-          backgroundColor: "#fff7ec",
-          border: "1px solid #e0d1c3",
-          borderRadius: "1.5rem",
-          boxShadow: "0 20px 40px rgba(139, 90, 43, 0.08)",
-          boxSizing: "border-box",
-          position: "relative",
-          overflow: "hidden"
-        }}
-      >
+    <div className="flex items-center justify-center min-h-[calc(100vh-80px)] p-4 md:p-8 bg-l3-bg font-sans">
+      <div className="w-full max-w-[450px] mx-auto p-6 md:p-10 bg-l3-card border border-l3-border rounded-3xl shadow-[0_20px_40px_rgba(139,90,43,0.08)] relative overflow-hidden">
         {/* Decoración circular de fondo */}
-        <div style={{ position: "absolute", top: "-2.5rem", right: "-2.5rem", width: "10rem", height: "10rem", backgroundColor: "rgba(217,160,91,0.15)", borderRadius: "50%", filter: "blur(40px)", pointerEvents: "none" }}></div>
-        <div style={{ position: "absolute", bottom: "-2.5rem", left: "-2.5rem", width: "10rem", height: "10rem", backgroundColor: "rgba(139,90,43,0.1)", borderRadius: "50%", filter: "blur(40px)", pointerEvents: "none" }}></div>
+        <div className="absolute -top-10 -right-10 w-40 h-40 bg-l3-gold/15 rounded-full blur-[40px] pointer-events-none"></div>
+        <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-l3-brown/10 rounded-full blur-[40px] pointer-events-none"></div>
         
-        <div style={{ position: "relative", zIndex: 10 }}>
-          <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
-            <h2 style={{ fontSize: "1.875rem", fontWeight: "800", color: "#3b2f2a", margin: 0 }}>
+        <div className="relative z-10">
+          <div className="text-center mb-8 md:mb-10">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-l3-paper m-0">
               Iniciar sesión
             </h2>
-            <p style={{ color: "#7b6f67", marginTop: "0.5rem", fontSize: "0.875rem" }}>
+            <p className="text-l3-muted mt-2 text-sm md:text-base">
               Bienvenido de nuevo a L3ttro
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5 md:gap-6">
             
             {/* Email */}
-            <div style={{ position: "relative" }}>
-              <div style={iconStyle}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7b6f67" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            <div className="relative group">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none opacity-60 text-l3-muted group-focus-within:text-l3-gold transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
               </div>
               <input
                 name="email"
@@ -141,16 +97,14 @@ export default function Login() {
                 placeholder="Correo electrónico"
                 value={form.email}
                 onChange={handleChange}
-                style={inputStyle}
-                onFocus={(e) => e.target.style.borderBottomColor = "#d9a05b"}
-                onBlur={(e) => e.target.style.borderBottomColor = "#e0d1c3"}
+                className="w-full box-border py-3 pl-10 pr-4 bg-transparent border-none border-b-2 border-l3-border outline-none text-l3-paper text-base transition-colors duration-200 focus:border-l3-gold placeholder:text-l3-muted/70"
               />
             </div>
 
             {/* Password */}
-            <div style={{ position: "relative" }}>
-              <div style={iconStyle}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7b6f67" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <div className="relative group">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none opacity-60 text-l3-muted group-focus-within:text-l3-gold transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               </div>
               <input
                 name="password"
@@ -158,43 +112,19 @@ export default function Login() {
                 placeholder="Contraseña"
                 value={form.password}
                 onChange={handleChange}
-                style={inputStyle}
-                onFocus={(e) => e.target.style.borderBottomColor = "#d9a05b"}
-                onBlur={(e) => e.target.style.borderBottomColor = "#e0d1c3"}
+                className="w-full box-border py-3 pl-10 pr-4 bg-transparent border-none border-b-2 border-l3-border outline-none text-l3-paper text-base transition-colors duration-200 focus:border-l3-gold placeholder:text-l3-muted/70"
               />
             </div>
 
             <button
               type="submit"
               disabled={status.loading}
-              style={{
-                width: "100%",
-                padding: "0.875rem",
-                marginTop: "1rem",
-                borderRadius: "0.75rem",
-                border: "none",
-                backgroundColor: "#d9a05b", 
-                color: "#fff7ec",
-                fontWeight: "bold",
-                fontSize: "1rem",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "0.5rem",
-                cursor: status.loading ? "not-allowed" : "pointer",
-                opacity: status.loading ? 0.7 : 1,
-                transition: "background-color 0.2s ease, transform 0.1s ease",
-              }}
-              onMouseOver={(e) => { if (!status.loading) e.currentTarget.style.backgroundColor = "#c68c4a" }}
-              onMouseOut={(e) => { if (!status.loading) e.currentTarget.style.backgroundColor = "#d9a05b" }}
-              onMouseDown={(e) => { if (!status.loading) e.currentTarget.style.transform = "scale(0.98)" }}
-              onMouseUp={(e) => { if (!status.loading) e.currentTarget.style.transform = "scale(1)" }}
+              className={`w-full py-3.5 mt-4 rounded-xl border-none bg-l3-gold text-l3-card font-bold text-base flex items-center justify-center gap-2 transition-all duration-200 ${
+                status.loading ? "opacity-70 cursor-not-allowed" : "cursor-pointer hover:bg-l3-goldHover active:scale-[0.98]"
+              }`}
             >
               {status.loading && (
-                <div style={{ animation: "spin 1s linear infinite" }}>
-                  <style>
-                    {`@keyframes spin { 100% { transform: rotate(360deg); } }`}
-                  </style>
+                <div className="animate-spin">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
                 </div>
               )}
@@ -202,13 +132,13 @@ export default function Login() {
             </button>
           </form>
 
-          <div style={{ margin: "1.5rem 0", display: "flex", alignItems: "center", gap: "1rem" }}>
-            <div style={{ flex: 1, height: "1px", backgroundColor: "#e0d1c3" }}></div>
-            <span style={{ fontSize: "0.8rem", color: "#7b6f67", fontWeight: "600" }}>O CONTINÚA CON</span>
-            <div style={{ flex: 1, height: "1px", backgroundColor: "#e0d1c3" }}></div>
+          <div className="my-6 md:my-8 flex items-center gap-4">
+            <div className="flex-1 h-px bg-l3-border"></div>
+            <span className="text-xs text-l3-muted font-semibold uppercase tracking-wider">O CONTINÚA CON</span>
+            <div className="flex-1 h-px bg-l3-border"></div>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "center" }}>
+          <div className="flex justify-center">
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
               onError={() => setStatus({ loading: false, error: "Error en la autenticación de Google", success: "" })}
@@ -220,23 +150,23 @@ export default function Login() {
           </div>
 
           {status.error && (
-            <div style={{ marginTop: "1.5rem", padding: "0.75rem", backgroundColor: "#fef2f2", border: "1px solid #fee2e2", borderRadius: "0.5rem", display: "flex", alignItems: "flex-start", gap: "0.5rem" }}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              <div style={{ fontSize: "0.875rem", fontWeight: "500", color: "#991b1b" }}>{status.error}</div>
+            <div className="mt-6 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <div className="text-sm font-medium text-red-800">{status.error}</div>
             </div>
           )}
 
           {status.success && (
-            <div style={{ marginTop: "1.5rem", padding: "0.75rem", backgroundColor: "#f0fdf4", border: "1px solid #dcfce3", borderRadius: "0.5rem", display: "flex", alignItems: "flex-start", gap: "0.5rem" }}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-              <div style={{ fontSize: "0.875rem", fontWeight: "500", color: "#166534" }}>{status.success}</div>
+            <div className="mt-6 p-3 bg-green-50 border border-green-200 rounded-lg flex items-start gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <div className="text-sm font-medium text-green-800">{status.success}</div>
             </div>
           )}
 
-          <div style={{ marginTop: "2rem", textAlign: "center" }}>
-            <p style={{ fontSize: "0.875rem", color: "#7b6f67" }}>
+          <div className="mt-8 text-center">
+            <p className="text-sm text-l3-muted">
               ¿No tienes una cuenta?{" "}
-              <Link to="/register" style={{ fontWeight: "600", color: "#8b5a2b", textDecoration: "none" }} onMouseOver={(e) => e.target.style.textDecoration = "underline"} onMouseOut={(e) => e.target.style.textDecoration = "none"}>
+              <Link to="/register" className="font-bold text-l3-brown no-underline hover:underline">
                 Regístrate
               </Link>
             </p>

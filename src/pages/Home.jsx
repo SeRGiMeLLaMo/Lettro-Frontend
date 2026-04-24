@@ -35,15 +35,15 @@ export default function Home() {
   }, []);
 
   return (
-    <div style={{ backgroundColor: "#f5ebe0", minHeight: "calc(100vh - 80px)", padding: "3rem 1rem", fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
-      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+    <div className="bg-l3-bg min-h-[calc(100vh-80px)] py-8 px-4 md:py-12 md:px-8 font-sans">
+      <div className="max-w-6xl mx-auto">
         
         {/* Banner/Hero Header Principal */}
-        <div style={{ textAlign: "center", marginBottom: "4rem" }}>
-          <h1 style={{ fontSize: "2.5rem", fontWeight: "800", color: "#3b2f2a", marginBottom: "0.5rem" }}>
-            Bienvenido a <span style={{ color: "#d9a05b" }}>L3ttro</span>
+        <div className="text-center mb-10 md:mb-16 px-2">
+          <h1 className="text-3xl md:text-5xl font-extrabold text-l3-paper mb-3 leading-tight tracking-tight">
+            Bienvenido a <span className="text-l3-gold font-serif">L3ttro</span>
           </h1>
-          <p style={{ fontSize: "1.1rem", color: "#7b6f67", maxWidth: "600px", margin: "0 auto" }}>
+          <p className="text-base md:text-lg text-l3-muted max-w-2xl mx-auto font-medium leading-relaxed">
             Explora un mundo infinito de historias. Descubre los últimos libros publicados por la comunidad y sumérgete en tus géneros favoritos.
           </p>
         </div>
@@ -56,28 +56,27 @@ export default function Home() {
         />
 
         {loading && (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "4rem 0", color: "#d9a05b" }}>
-            <div style={{ animation: "spin 1s linear infinite", marginBottom: "1rem" }}>
-              <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+          <div className="flex flex-col items-center py-16 md:py-20 text-l3-gold">
+            <div className="animate-spin mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
             </div>
-            <p style={{ fontSize: "1.1rem", fontWeight: "500", color: "#8b5a2b" }}>
+            <p className="text-lg font-semibold text-l3-brown">
               Abriendo estanterías...
             </p>
           </div>
         )}
 
         {!loading && error && (
-          <div style={{ padding: "1.5rem", backgroundColor: "#fef2f2", border: "1px solid #fee2e2", borderRadius: "1rem", color: "#991b1b", textAlign: "center", marginBottom: "2rem" }}>
-            {error}
+          <div className="p-4 md:p-6 bg-red-50 border border-red-200 rounded-2xl text-red-700 text-center mb-8 shadow-sm">
+            <p className="font-medium text-sm md:text-base">{error}</p>
           </div>
         )}
 
         {!loading && !error && stories.length === 0 && (
-          <div style={{ textAlign: "center", padding: "5rem 2rem", backgroundColor: "#fff7ec", border: "1px dashed #d9a05b", borderRadius: "1.5rem", color: "#7b6f67" }}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d9a05b" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ margin: "0 auto", marginBottom: "1rem", opacity: 0.5 }}><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-0-5H20"/></svg>
-            <p style={{ fontSize: "1.25rem", fontWeight: "500", color: "#3b2f2a", marginBottom: "0.5rem" }}>Todavía no hay historias creadas.</p>
-            <p style={{ fontSize: "1rem" }}>¡Anímate a ser el primero en publicar una!</p>
+          <div className="text-center py-16 md:py-24 px-6 bg-l3-card border-2 border-dashed border-l3-gold/50 rounded-3xl text-l3-muted mx-4 md:mx-0 shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-4 text-l3-gold opacity-60"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-0-5H20"/></svg>
+            <p className="text-xl md:text-2xl font-bold text-l3-paper mb-2">Todavía no hay historias creadas.</p>
+            <p className="text-base md:text-lg">¡Anímate a ser el primero en publicar una!</p>
           </div>
         )}
 
@@ -90,7 +89,7 @@ export default function Home() {
           if (genreStories.length === 0) return null;
 
           return (
-            <div key={genre.id} style={{ marginTop: "3rem", borderTop: "1px solid rgba(217,160,91,0.2)", paddingTop: "3rem" }}>
+            <div key={genre.id} className="mt-12 md:mt-16 pt-8 md:pt-12 border-t border-l3-gold/20">
               <StoryCarousel
                 title={`Explora: ${genre.name}`}
                 description={`Lo mejor del género ${genre.name.toLowerCase()}`}

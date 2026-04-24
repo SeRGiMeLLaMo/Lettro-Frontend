@@ -120,14 +120,16 @@ export default function Story() {
   };
 
   if (loading) return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", backgroundColor: "#f5ebe0" }}>
-      <p style={{ color: "#7b6f67" }}>Cargando historia...</p>
+    <div className="flex justify-center items-center min-h-[calc(100vh-80px)] bg-l3-bg">
+      <div className="animate-spin text-l3-gold mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+      </div>
     </div>
   );
 
   if (error || !story) return (
-    <div style={{ textAlign: "center", padding: "4rem", backgroundColor: "#f5ebe0", minHeight: "100vh" }}>
-      <p style={{ color: "#991b1b" }}>{error || "Historia no encontrada."}</p>
+    <div className="text-center py-16 bg-l3-bg min-h-[calc(100vh-80px)]">
+      <p className="text-red-600 font-bold">{error || "Historia no encontrada."}</p>
     </div>
   );
 
@@ -135,113 +137,78 @@ export default function Story() {
   const isAuthor = user?.id && story?.author?.id && Number(user.id) === Number(story.author.id);
 
   return (
-    <div style={{ 
-      backgroundColor: "#f5ebe0", 
-      minHeight: "100vh", 
-      padding: "3rem 1rem",
-      fontFamily: "system-ui, -apple-system, sans-serif"
-    }}>
-      <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
+    <div className="bg-l3-bg min-h-screen py-8 px-4 md:py-12 md:px-8 font-sans">
+      <div className="max-w-5xl mx-auto">
         
         {/* HEADER: Cover + Info */}
-        <div style={{ 
-          display: "flex", 
-          gap: "2.5rem", 
-          alignItems: "flex-start", 
-          marginBottom: "3rem",
-          flexWrap: "wrap"
-        }}>
+        <div className="flex flex-col md:flex-row gap-8 lg:gap-10 items-center md:items-start mb-10 md:mb-12">
           {/* Cover */}
-          <div style={{ 
-            width: "240px", 
-            height: "360px",
-            borderRadius: "1rem",
-            overflow: "hidden",
-            boxShadow: "0 20px 40px rgba(139, 90, 43, 0.15)",
-            border: "2px solid #fff",
-            backgroundColor: "#fff7ec",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0
-          }}>
+          <div className="w-[200px] h-[300px] md:w-[240px] md:h-[360px] rounded-2xl overflow-hidden shadow-[0_20px_40px_rgba(139,90,43,0.15)] border-2 border-white bg-l3-card flex items-center justify-center shrink-0">
             {story.cover_image ? (
               <img 
                 src={story.cover_image.startsWith("http") ? story.cover_image : `${STORAGE_URL}/${story.cover_image}`} 
                 alt={story.title} 
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                className="w-full h-full object-cover"
               />
             ) : (
-              <div style={{ textAlign: "center", padding: "1rem" }}>
-                <span style={{ color: "#d9a05b", fontSize: "0.875rem", fontWeight: "600" }}>Sin Portada</span>
+              <div className="text-center p-4">
+                <span className="text-l3-gold text-sm font-semibold">Sin Portada</span>
               </div>
             )}
           </div>
 
           {/* Details */}
-          <div style={{ flex: 1, minWidth: "300px", display: "flex", flexDirection: "column", gap: "1rem" }}>
-            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "0.5rem" }}>
+          <div className="flex-1 min-w-[300px] flex flex-col gap-4 w-full text-center md:text-left items-center md:items-start">
+            <div className="flex gap-2 flex-wrap mb-1 justify-center md:justify-start">
               {story.genres?.map(g => (
-                <span key={g.id} style={{ fontSize: "0.7rem", fontWeight: "700", color: "#d9a05b", backgroundColor: "rgba(217,160,91,0.1)", padding: "0.25rem 0.75rem", borderRadius: "2rem", textTransform: "uppercase" }}>
+                <span key={g.id} className="text-[0.7rem] font-bold text-l3-gold bg-l3-gold/10 px-3 py-1 rounded-full uppercase">
                   {g.name}
                 </span>
               ))}
             </div>
             
-            <h1 style={{ fontSize: "3rem", fontWeight: "800", color: "#3b2f2a", margin: 0, fontFamily: "serif", lineHeight: 1.1 }}>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-l3-paper m-0 font-serif leading-[1.1]">
               {story.title}
             </h1>
             
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              <span style={{ color: "#7b6f67" }}>por</span>
-              <Link to={`/profile/${story.author?.id}`} style={{ color: "#d9a05b", fontWeight: "700", textDecoration: "none" }}>
+            <div className="flex items-center gap-2">
+              <span className="text-l3-muted">por</span>
+              <Link to={`/profile/${story.author?.id}`} className="text-l3-gold font-bold no-underline hover:underline">
                 {story.author?.username}
               </Link>
             </div>
 
-            <div style={{ display: "flex", gap: "2rem", marginTop: "1rem" }}>
-              <div>
-                <div style={{ fontSize: "1.25rem", fontWeight: "800", color: "#3b2f2a" }}>{likesCount}</div>
-                <div style={{ fontSize: "0.75rem", color: "#7b6f67", textTransform: "uppercase", fontWeight: "600" }}>Lectores</div>
+            <div className="flex gap-8 mt-4">
+              <div className="text-center md:text-left">
+                <div className="text-2xl font-extrabold text-l3-paper">{likesCount}</div>
+                <div className="text-xs text-l3-muted uppercase font-semibold">Lectores</div>
               </div>
-              <div>
-                <div style={{ fontSize: "1.25rem", fontWeight: "800", color: "#3b2f2a" }}>{chapters.length}</div>
-                <div style={{ fontSize: "0.75rem", color: "#7b6f67", textTransform: "uppercase", fontWeight: "600" }}>Capítulos</div>
+              <div className="text-center md:text-left">
+                <div className="text-2xl font-extrabold text-l3-paper">{chapters.length}</div>
+                <div className="text-xs text-l3-muted uppercase font-semibold">Capítulos</div>
               </div>
             </div>
 
-            <div style={{ display: "flex", gap: "1rem", marginTop: "1.5rem" }}>
+            <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-4 mt-6">
               {!isAuthor && (
                 <>
                   <button 
                     onClick={handleToggleLike}
-                    style={{ 
-                      flex: 1, 
-                      padding: "0.8rem", 
-                      borderRadius: "0.75rem", 
-                      border: liked ? "none" : "1px solid #d9a05b", 
-                      backgroundColor: liked ? "#d9a05b" : "transparent",
-                      color: liked ? "#fff7ec" : "#d9a05b",
-                      fontWeight: "bold",
-                      cursor: "pointer",
-                      transition: "all 0.2s"
-                    }}
+                    className={`flex-1 sm:flex-none min-w-[140px] px-6 py-3 rounded-xl font-bold cursor-pointer transition-all duration-200 ${
+                      liked 
+                        ? "bg-l3-gold text-l3-card border-none shadow-md" 
+                        : "bg-transparent text-l3-gold border border-l3-gold hover:bg-l3-gold hover:text-l3-card"
+                    }`}
                   >
                     {liked ? "♥ Siguiendo" : "♡ Me gusta"}
                   </button>
                   <button 
                     onClick={handleToggleFollow}
-                    style={{ 
-                      flex: 1, 
-                      padding: "0.8rem", 
-                      borderRadius: "0.75rem", 
-                      border: "none", 
-                      backgroundColor: following ? "#3b2f2a" : "#fff",
-                      color: following ? "#fff7ec" : "#3b2f2a",
-                      boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-                      fontWeight: "bold",
-                      cursor: "pointer"
-                    }}
+                    className={`flex-1 sm:flex-none min-w-[140px] px-6 py-3 rounded-xl font-bold cursor-pointer border-none shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-all duration-200 ${
+                      following 
+                        ? "bg-l3-paper text-l3-card" 
+                        : "bg-white text-l3-paper hover:bg-gray-50"
+                    }`}
                   >
                     {following ? "✓ Siguiendo autor" : "+ Seguir autor"}
                   </button>
@@ -250,16 +217,7 @@ export default function Story() {
               {isAuthor && (
                 <button 
                   onClick={() => navigate(`/stories/${id}/create-chapter`)}
-                  style={{ 
-                    flex: 1, 
-                    padding: "0.8rem", 
-                    borderRadius: "0.75rem", 
-                    border: "none", 
-                    backgroundColor: "#d9a05b", 
-                    color: "#fff",
-                    fontWeight: "bold",
-                    cursor: "pointer"
-                  }}
+                  className="flex-1 sm:flex-none px-6 py-3 rounded-xl border-none bg-l3-gold text-white font-bold cursor-pointer hover:bg-l3-goldHover transition-colors shadow-md"
                 >
                   + Nuevo Capítulo
                 </button>
@@ -269,63 +227,49 @@ export default function Story() {
         </div>
 
         {/* Sinopsis Card */}
-        <div style={{ 
-          backgroundColor: "#fff7ec", 
-          padding: "2.5rem", 
-          borderRadius: "1.5rem", 
-          border: "1px solid #e0d1c3",
-          marginBottom: "3rem",
-          boxShadow: "0 10px 30px rgba(139, 90, 43, 0.05)"
-        }}>
-          <h3 style={{ fontSize: "0.75rem", color: "#d9a05b", textTransform: "uppercase", letterSpacing: "2px", margin: "0 0 1rem 0" }}>Sinopsis</h3>
-          <p style={{ color: "#3b2f2a", lineHeight: 1.8, margin: 0, fontSize: "1.1rem" }}>
+        <div className="bg-l3-card p-6 md:p-10 rounded-3xl border border-l3-border mb-10 shadow-[0_10px_30px_rgba(139,90,43,0.05)]">
+          <h3 className="text-xs text-l3-gold uppercase tracking-[2px] m-0 mb-4 font-bold">Sinopsis</h3>
+          <p className="text-l3-paper leading-relaxed m-0 text-base md:text-lg">
             {story.description || "Esta obra aguarda un resumen..."}
           </p>
         </div>
 
         {/* Chapters List */}
         <div>
-          <h3 style={{ fontSize: "1.5rem", fontWeight: "800", color: "#3b2f2a", marginBottom: "1.5rem" }}>Tabla de contenidos</h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+          <h3 className="text-2xl font-extrabold text-l3-paper mb-6">Tabla de contenidos</h3>
+          <div className="flex flex-col gap-3">
             {chapters.length === 0 ? (
-              <p style={{ color: "#7b6f67", textAlign: "center", padding: "2rem" }}>Aún no hay capítulos publicados.</p>
+              <p className="text-l3-muted text-center py-8">Aún no hay capítulos publicados.</p>
             ) : (
               chapters.map((ch, idx) => (
-                <div key={ch.id} style={{ 
-                  backgroundColor: "#fff7ec", 
-                  padding: "1.25rem 2rem", 
-                  borderRadius: "1rem", 
-                  border: "1px solid #e0d1c3",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  transition: "all 0.2s",
-                  cursor: "pointer"
-                }}
-                onMouseOver={(e) => { e.currentTarget.style.borderColor = "#d9a05b"; e.currentTarget.style.transform = "translateX(5px)"; }}
-                onMouseOut={(e) => { e.currentTarget.style.borderColor = "#e0d1c3"; e.currentTarget.style.transform = "translateX(0)"; }}
-                onClick={() => navigate(`/chapters/${ch.id}`)}
+                <div key={ch.id} 
+                  className="bg-l3-card px-5 md:px-8 py-4 md:py-5 rounded-2xl border border-l3-border flex items-center justify-between transition-all duration-200 cursor-pointer hover:border-l3-gold hover:translate-x-1 group shadow-sm"
+                  onClick={() => navigate(`/chapters/${ch.id}`)}
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
-                    <span style={{ color: "#d9a05b", fontWeight: "800", fontSize: "1.1rem", minWidth: "2rem" }}>
+                  <div className="flex items-center gap-4 md:gap-6 w-full">
+                    <span className="text-l3-gold font-extrabold text-lg md:text-xl min-w-[2rem]">
                       {(ch.order || idx + 1).toString().padStart(2, '0')}
                     </span>
-                    <span style={{ color: "#3b2f2a", fontWeight: "600", fontSize: "1rem" }}>{ch.title}</span>
+                    <span className="text-l3-paper font-semibold text-base md:text-lg truncate mr-auto">
+                      {ch.title}
+                    </span>
                   </div>
                   
                   {isAuthor && (
-                    <div style={{ display: "flex", gap: "0.5rem" }} onClick={(e) => e.stopPropagation()}>
+                    <div className="flex gap-2 shrink-0 ml-4" onClick={(e) => e.stopPropagation()}>
                       <button 
                         onClick={() => navigate(`/stories/${id}/chapters/${ch.id}/edit`)}
-                        style={{ border: "none", background: "none", color: "#7b6f67", cursor: "pointer", padding: "0.5rem" }}
+                        className="border-none bg-transparent text-l3-muted hover:text-l3-gold cursor-pointer p-2 transition-colors"
+                        title="Editar capítulo"
                       >
-                        ✎
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                       </button>
                       <button 
                         onClick={() => handleDeleteChapter(ch.id)}
-                        style={{ border: "none", background: "none", color: "#991b1b", cursor: "pointer", padding: "0.5rem" }}
+                        className="border-none bg-transparent text-red-400 hover:text-red-600 cursor-pointer p-2 transition-colors"
+                        title="Eliminar capítulo"
                       >
-                        ✕
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                       </button>
                     </div>
                   )}

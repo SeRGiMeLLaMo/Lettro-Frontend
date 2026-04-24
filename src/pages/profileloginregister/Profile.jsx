@@ -117,133 +117,103 @@ function Profile() {
         setUser((prev) => ({ ...prev, followers_count: res.data.followers_count }));
       }
     } catch (error) {
+    } catch (error) {
       console.error(error);
       toast.error("Debes iniciar sesión para seguir autores.");
     }
   };
 
   return (
-    <div style={{ backgroundColor: "#f5ebe0", minHeight: "calc(100vh - 80px)", padding: "2rem 1rem", fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
-      <div style={{ maxWidth: "800px", margin: "0 auto", backgroundColor: "#fff7ec", border: "1px solid #e0d1c3", borderRadius: "1.5rem", padding: "2.5rem 2rem", boxShadow: "0 20px 40px rgba(139, 90, 43, 0.05)" }}>
+    <div className="bg-l3-bg min-h-[calc(100vh-80px)] py-8 px-4 md:py-12 md:px-8 font-sans">
+      <div className="max-w-4xl mx-auto bg-l3-card border border-l3-border rounded-3xl p-6 md:p-10 shadow-[0_20px_40px_rgba(139,90,43,0.05)]">
         
         {/* HEADER TIPO INSTAGRAM */}
-        <div style={{ display: "flex", gap: "2rem", alignItems: "flex-start", marginBottom: "2rem" }}>
+        <div className="flex flex-col sm:flex-row gap-6 md:gap-8 items-center sm:items-start mb-8 md:mb-10">
           
           {/* FOTO (Izquierda) */}
-          <div style={{ flexShrink: 0 }}>
-            <div style={{
-              width: "120px", height: "120px", 
-              borderRadius: "50%", 
-              padding: "4px",
-              background: "linear-gradient(45deg, #d9a05b, #e0d1c3)",
-              display: "flex", alignItems: "center", justifyContent: "center"
-            }}>
+          <div className="shrink-0">
+            <div className="w-[100px] h-[100px] md:w-[120px] md:h-[120px] rounded-full p-1 bg-gradient-to-tr from-l3-gold to-l3-border flex items-center justify-center">
               <img
                 src={user.photo ? (user.photo.startsWith("http") ? user.photo : `${STORAGE_URL}/${user.photo}`) : "/perfilpredeterminado.png"}
                 alt="Foto perfil"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                  border: "3px solid #fff7ec",
-                  backgroundColor: "#fff7ec"
-                }}
+                className="w-full h-full rounded-full object-cover border-4 border-l3-card bg-l3-card"
               />
             </div>
           </div>
 
           {/* DATOS (Derecha) */}
-          <div style={{ flex: 1, paddingTop: "0.5rem" }}>
+          <div className="flex-1 pt-0 sm:pt-2 text-center sm:text-left w-full">
             
-            <div style={{ display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap", marginBottom: "1rem" }}>
-              <h1 style={{ margin: 0, fontSize: "1.75rem", fontWeight: "300", color: "#3b2f2a" }}>
+            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 flex-wrap mb-4 md:mb-5">
+              <h1 className="m-0 text-2xl md:text-3xl font-light text-l3-paper">
                 {user.name}
               </h1>
-              {viewer?.id !== Number(id) && following ? (
-                <span style={{ fontSize: "0.85rem", color: "#22c55e", fontWeight: "600", padding: "0.2rem 0.5rem", borderRadius: "1rem", backgroundColor: "rgba(34,197,94,0.1)" }}>
+              {viewer?.id !== Number(id) && following && (
+                <span className="text-xs md:text-sm text-green-600 font-bold px-3 py-1 rounded-full bg-green-500/10">
                   Siguiendo
                 </span>
-              ) : null}
+              )}
 
               {/* Botones de acción */}
-              {viewer?.id === Number(id) ? (
-                <button
-                  type="button"
-                  onClick={() => navigate("/edit-profile")}
-                  style={{
-                    padding: "0.4rem 1rem",
-                    borderRadius: "0.5rem",
-                    border: "1px solid #d9a05b",
-                    background: "transparent",
-                    color: "#d9a05b",
-                    fontSize: "0.85rem",
-                    fontWeight: "600",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease"
-                  }}
-                  onMouseOver={(e) => { e.currentTarget.style.backgroundColor = "#d9a05b"; e.currentTarget.style.color = "#fff7ec"; }}
-                  onMouseOut={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "#d9a05b"; }}
-                >
-                  Editar Perfil
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={handleToggleFollow}
-                  style={{
-                    padding: "0.4rem 1rem",
-                    borderRadius: "0.5rem",
-                    border: "none",
-                    background: following ? "#e0d1c3" : "#d9a05b",
-                    color: following ? "#3b2f2a" : "#fff7ec",
-                    fontSize: "0.85rem",
-                    fontWeight: "600",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease"
-                  }}
-                  onMouseOver={(e) => { e.currentTarget.style.opacity = "0.8"; }}
-                  onMouseOut={(e) => { e.currentTarget.style.opacity = "1"; }}
-                >
-                  {following ? "Dejar de seguir" : "Seguir"}
-                </button>
-              )}
+              <div className="mt-2 sm:mt-0 w-full sm:w-auto flex justify-center sm:justify-start">
+                {viewer?.id === Number(id) ? (
+                  <button
+                    type="button"
+                    onClick={() => navigate("/edit-profile")}
+                    className="px-5 py-2 rounded-xl border border-l3-gold bg-transparent text-l3-gold text-sm font-bold cursor-pointer transition-all duration-200 hover:bg-l3-gold hover:text-l3-card w-full sm:w-auto"
+                  >
+                    Editar Perfil
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleToggleFollow}
+                    className={`px-5 py-2 rounded-xl border-none text-sm font-bold cursor-pointer transition-all duration-200 w-full sm:w-auto ${
+                      following 
+                        ? "bg-l3-border text-l3-paper hover:opacity-80" 
+                        : "bg-l3-gold text-l3-card hover:opacity-90"
+                    }`}
+                  >
+                    {following ? "Dejar de seguir" : "Seguir"}
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Contadores */}
-            <div style={{ display: "flex", gap: "2.5rem", marginBottom: "1rem" }}>
-              <div style={{ textAlign: "center" }}>
-                <span style={{ display: "block", fontSize: "1.25rem", fontWeight: "600", color: "#3b2f2a" }}>{followersCount}</span>
-                <span style={{ fontSize: "0.9rem", color: "#7b6f67" }}>Seguidores</span>
+            <div className="flex justify-center sm:justify-start gap-8 md:gap-10 mb-5">
+              <div className="text-center">
+                <span className="block text-xl md:text-2xl font-bold text-l3-paper">{followersCount}</span>
+                <span className="text-sm md:text-base text-l3-muted">Seguidores</span>
               </div>
-              <div style={{ textAlign: "center" }}>
-                <span style={{ display: "block", fontSize: "1.25rem", fontWeight: "600", color: "#3b2f2a" }}>{stories.length}</span>
-                <span style={{ fontSize: "0.9rem", color: "#7b6f67" }}>Historias</span>
+              <div className="text-center">
+                <span className="block text-xl md:text-2xl font-bold text-l3-paper">{stories.length}</span>
+                <span className="text-sm md:text-base text-l3-muted">Historias</span>
               </div>
             </div>
 
             {/* Biografía */}
             {user.description && (
-              <p style={{ margin: 0, fontSize: "0.95rem", color: "#3b2f2a", lineHeight: "1.5", maxWidth: "90%" }}>
+              <p className="m-0 text-sm md:text-base text-l3-paper leading-relaxed max-w-full sm:max-w-[90%]">
                 {user.description}
               </p>
             )}
           </div>
         </div>
 
-        <hr style={{ border: "none", borderTop: "1px solid #e0d1c3", margin: "2rem 0" }} />
+        <hr className="border-none border-t border-l3-border my-8 md:my-10" />
 
         {/* LISTA DE STORIES DEL USUARIO */}
-        <h2 style={{ fontSize: "1.25rem", fontWeight: "700", color: "#3b2f2a", marginBottom: "1.5rem", letterSpacing: "1px", textTransform: "uppercase" }}>
+        <h2 className="text-lg md:text-xl font-bold text-l3-paper mb-6 tracking-wide uppercase text-center sm:text-left">
           Mis historias
         </h2>
 
         {stories.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "3rem 1rem", border: "1px dashed #e0d1c3", borderRadius: "1rem", color: "#7b6f67" }}>
+          <div className="text-center p-8 md:p-12 border border-dashed border-l3-border rounded-2xl text-l3-muted">
             Este usuario aún no ha publicado historias.
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          <div className="flex flex-col gap-4 md:gap-6">
             {stories.map((story) => {
               const likesCount = story.likes_count || 0;
               const chapters = story.chapters || [];
@@ -252,52 +222,40 @@ function Profile() {
               return (
                 <div
                   key={story.id}
-                  style={{
-                    border: "1px solid #e0d1c3",
-                    padding: "1.5rem",
-                    borderRadius: "1rem",
-                    backgroundColor: "#fff7ec",
-                    boxShadow: "0 2px 8px rgba(139, 90, 43, 0.03)"
-                  }}
+                  className="border border-l3-border p-4 md:p-6 rounded-2xl bg-l3-card shadow-sm transition-all duration-200 hover:shadow-md"
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem" }}>
+                  <div className="flex flex-col sm:flex-row justify-between items-start flex-wrap gap-4">
                     
-                    <div style={{ display: "flex", gap: "1rem", alignItems: "flex-start" }}>
-                      <div style={{
-                        width: "60px", height: "90px",
-                        borderRadius: "0.5rem", overflow: "hidden",
-                        border: "1px solid #e0d1c3", backgroundColor: "#f5ebe0"
-                      }}>
+                    <div className="flex gap-4 items-start w-full sm:w-auto">
+                      <div className="w-16 h-24 shrink-0 rounded-lg overflow-hidden border border-l3-border bg-l3-bg">
                         {story.cover_image ? (
                           <img 
                             src={story.cover_image.startsWith("http") ? story.cover_image : `${STORAGE_URL}/${story.cover_image}`} 
                             alt={story.title} 
-                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                            className="w-full h-full object-cover"
                           />
                         ) : (
-                          <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", color: "#a89f91", textAlign: "center", padding: "5px" }}>
+                          <div className="w-full h-full flex items-center justify-center text-[10px] text-l3-muted text-center p-1">
                             Sin portada
                           </div>
                         )}
                       </div>
-                      <div>
-                        <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem", color: "#3b2f2a", fontWeight: "700" }}>{story.title}</h3>
-                        <p style={{ margin: 0, fontSize: "0.85rem", color: "#7b6f67", fontWeight: "600", display: "flex", alignItems: "center", gap: "4px" }}>
-                          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none" color="#d9a05b"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="m-0 mb-1 text-lg font-bold text-l3-paper leading-tight">{story.title}</h3>
+                        <p className="m-0 text-sm text-l3-muted font-bold flex items-center gap-1">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none" className="text-l3-gold"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                           {likesCount} Me gustas
                         </p>
                       </div>
                     </div>
 
-                    <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                    <div className="flex gap-2 flex-wrap w-full sm:w-auto mt-2 sm:mt-0 justify-end">
                       {viewer?.id === Number(id) && (
                         <>
                           <button
                             type="button"
                             onClick={() => navigate(`/stories/${story.id}/edit`)}
-                            style={{ padding: "0.4rem 0.8rem", borderRadius: "0.5rem", border: "1px solid #d9a05b", background: "transparent", color: "#d9a05b", fontSize: "0.8rem", fontWeight: "600", cursor: "pointer", transition: "all 0.2s ease" }}
-                            onMouseOver={(e) => { e.currentTarget.style.backgroundColor = "#d9a05b"; e.currentTarget.style.color = "#fff7ec"; }}
-                            onMouseOut={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "#d9a05b"; }}
+                            className="px-3 py-1.5 md:px-4 md:py-2 rounded-lg border border-l3-gold bg-transparent text-l3-gold text-xs md:text-sm font-bold cursor-pointer transition-colors duration-200 hover:bg-l3-gold hover:text-l3-card flex-1 sm:flex-none text-center"
                           >
                             Editar
                           </button>
@@ -310,9 +268,7 @@ function Profile() {
                                 setUser((prev) => prev ? { ...prev, stories: (prev.stories || []).filter((s) => s.id !== story.id) } : prev);
                               } catch (error) { console.error(error); toast.error("No se pudo eliminar la historia."); }
                             }}
-                            style={{ padding: "0.4rem 0.8rem", borderRadius: "0.5rem", border: "none", background: "#ef4444", color: "#fff", fontSize: "0.8rem", fontWeight: "600", cursor: "pointer", transition: "all 0.2s ease" }}
-                            onMouseOver={(e) => { e.currentTarget.style.backgroundColor = "#dc2626"; }}
-                            onMouseOut={(e) => { e.currentTarget.style.backgroundColor = "#ef4444"; }}
+                            className="px-3 py-1.5 md:px-4 md:py-2 rounded-lg border-none bg-red-500 text-white text-xs md:text-sm font-bold cursor-pointer transition-colors duration-200 hover:bg-red-600 flex-1 sm:flex-none text-center"
                           >
                             Eliminar
                           </button>
@@ -321,9 +277,9 @@ function Profile() {
                       <button
                         type="button"
                         onClick={() => toggleStoryDropdown(story.id)}
-                        style={{ padding: "0.4rem 0.8rem", borderRadius: "0.5rem", border: "1px solid #e0d1c3", background: isOpen ? "#e0d1c3" : "transparent", color: "#3b2f2a", fontSize: "0.8rem", fontWeight: "600", cursor: "pointer", transition: "all 0.2s ease" }}
-                        onMouseOver={(e) => { e.currentTarget.style.backgroundColor = "#e0d1c3"; }}
-                        onMouseOut={(e) => { e.currentTarget.style.backgroundColor = isOpen ? "#e0d1c3" : "transparent"; }}
+                        className={`px-3 py-1.5 md:px-4 md:py-2 rounded-lg border border-l3-border text-l3-paper text-xs md:text-sm font-bold cursor-pointer transition-colors duration-200 flex-1 sm:flex-none text-center ${
+                          isOpen ? "bg-l3-border" : "bg-transparent hover:bg-l3-border/50"
+                        }`}
                       >
                         {isOpen ? "Ocultar capítulos" : "Ver capítulos"}
                       </button>
@@ -331,34 +287,32 @@ function Profile() {
                   </div>
 
                   {isOpen && (
-                    <div style={{ marginTop: "1rem", padding: "1rem", backgroundColor: "rgba(217,160,91,0.05)", borderRadius: "0.75rem", border: "1px solid #e0d1c3" }}>
+                    <div className="mt-4 p-4 bg-l3-gold/5 rounded-xl border border-l3-border">
                       {chapters.length > 0 ? (
-                        <ul style={{ listStyle: "none", padding: 0, margin: "0 0 1rem 0" }}>
+                        <ul className="list-none p-0 m-0 mb-4 flex flex-col gap-2">
                           {chapters.map((ch, index) => (
                             <li 
                               key={ch.id}
-                              style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.5rem 0", borderBottom: index < chapters.length - 1 ? "1px dashed #e0d1c3" : "none" }}
+                              className={`flex flex-col sm:flex-row sm:justify-between sm:items-center py-2 gap-2 ${
+                                index < chapters.length - 1 ? "border-b border-dashed border-l3-border" : ""
+                              }`}
                             >
-                              <span style={{ fontSize: "0.9rem", color: "#3b2f2a" }}>
-                                <strong style={{ color: "#8b5a2b", marginRight: "0.5rem" }}>#{ch.order || index + 1}</strong>
+                              <span className="text-sm md:text-base text-l3-paper font-medium">
+                                <strong className="text-l3-brown mr-2">#{ch.order || index + 1}</strong>
                                 {ch.title}
                               </span>
 
                               {viewer?.id === Number(id) && (
-                                <div style={{ display: "flex", gap: "0.5rem" }}>
+                                <div className="flex gap-2 justify-end">
                                   <button
                                     onClick={() => navigate(`/stories/${story.id}/chapters/${ch.id}/edit`)}
-                                    style={{ padding: "0.25rem 0.5rem", fontSize: "0.75rem", borderRadius: "0.25rem", border: "1px solid #d9a05b", background: "transparent", color: "#d9a05b", cursor: "pointer", fontWeight: "600" }}
-                                    onMouseOver={(e) => { e.currentTarget.style.backgroundColor = "#d9a05b"; e.currentTarget.style.color = "#fff7ec"; }}
-                                    onMouseOut={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "#d9a05b"; }}
+                                    className="px-3 py-1 text-xs rounded border border-l3-gold bg-transparent text-l3-gold font-bold cursor-pointer transition-colors duration-200 hover:bg-l3-gold hover:text-l3-card"
                                   >
                                     Editar
                                   </button>
                                   <button
                                     onClick={() => handleDeleteChapter(story.id, ch.id)}
-                                    style={{ padding: "0.25rem 0.5rem", fontSize: "0.75rem", borderRadius: "0.25rem", border: "none", background: "#ef4444", color: "#fff", cursor: "pointer", fontWeight: "600" }}
-                                    onMouseOver={(e) => { e.currentTarget.style.backgroundColor = "#dc2626"; }}
-                                    onMouseOut={(e) => { e.currentTarget.style.backgroundColor = "#ef4444"; }}
+                                    className="px-3 py-1 text-xs rounded border-none bg-red-500 text-white font-bold cursor-pointer transition-colors duration-200 hover:bg-red-600"
                                   >
                                     Eliminar
                                   </button>
@@ -368,18 +322,16 @@ function Profile() {
                           ))}
                         </ul>
                       ) : (
-                        <p style={{ fontSize: "0.85rem", color: "#7b6f67", margin: "0 0 1rem 0", fontStyle: "italic" }}>Esta historia aún no tiene capítulos.</p>
+                        <p className="text-sm text-l3-muted m-0 mb-4 italic">Esta historia aún no tiene capítulos.</p>
                       )}
 
                       {viewer?.id === Number(id) && (
                         <button
                           type="button"
                           onClick={() => handleAddChapter(story.id)}
-                          style={{ padding: "0.5rem 1rem", borderRadius: "0.5rem", border: "none", background: "#8b5a2b", color: "#fff7ec", fontSize: "0.85rem", fontWeight: "600", cursor: "pointer", display: "flex", alignItems: "center", gap: "0.5rem" }}
-                          onMouseOver={(e) => { e.currentTarget.style.backgroundColor = "#6a4420"; }}
-                          onMouseOut={(e) => { e.currentTarget.style.backgroundColor = "#8b5a2b"; }}
+                          className="px-4 py-2 rounded-lg border-none bg-l3-brown text-l3-card text-sm font-bold cursor-pointer flex items-center gap-2 transition-colors duration-200 hover:bg-l3-brown/90 w-full sm:w-auto justify-center"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                           Añadir capítulo
                         </button>
                       )}

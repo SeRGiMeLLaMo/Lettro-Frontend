@@ -15,32 +15,22 @@ export default function StoryCarousel({ title, description, stories }) {
   if (!stories || stories.length === 0) return null;
 
   return (
-    <div style={{ marginBottom: "2rem" }}>
-      <div style={{ padding: "0 1rem", marginBottom: "1.5rem" }}>
-        <h2 style={{ fontSize: "1.5rem", fontWeight: "800", color: "#3b2f2a", margin: "0 0 0.25rem 0", textTransform: "uppercase", letterSpacing: "1px" }}>
+    <div className="mb-8 md:mb-12">
+      <div className="px-4 mb-4 md:mb-6">
+        <h2 className="text-xl md:text-2xl font-extrabold text-l3-paper m-0 uppercase tracking-wide">
           {title}
         </h2>
         {description && (
-          <p style={{ fontSize: "0.95rem", color: "#8b5a2b", margin: 0, fontStyle: "italic", fontWeight: "500" }}>
+          <p className="text-sm md:text-base text-l3-brown m-0 mt-1 italic font-medium">
             {description}
           </p>
         )}
       </div>
 
-      <div style={{ position: "relative" }}>
+      <div className="relative">
         <div
           ref={carouselRef}
-          style={{
-            display: "flex",
-            gap: "1.5rem",
-            overflowX: "auto",
-            padding: "1rem",
-            scrollBehavior: "smooth",
-            scrollSnapType: "x mandatory",
-            // Hide scrollbar styles basic support
-            scrollbarWidth: "none",
-            msOverflowStyle: "none",
-          }}
+          className="flex gap-4 md:gap-6 overflow-x-auto px-4 pb-4 snap-x snap-mandatory scroll-smooth scrollbar-hide"
         >
           {stories.map((story) => {
             const coverUrl = story.cover_image
@@ -53,141 +43,73 @@ export default function StoryCarousel({ title, description, stories }) {
               <Link
                 key={story.id}
                 to={`/story/${story.id}`}
-                style={{
-                  scrollSnapAlign: "start",
-                  flexShrink: 0,
-                  width: "160px",
-                  display: "flex",
-                  flexDirection: "column",
-                  textDecoration: "none",
-                  backgroundColor: "#fff7ec",
-                  padding: "1rem",
-                  borderRadius: "1rem",
-                  border: "1px solid #e0d1c3",
-                  boxShadow: "0 4px 6px rgba(139, 90, 43, 0.05)",
-                  transition: "transform 0.2s, box-shadow 0.2s",
-                  cursor: "pointer",
-                }}
-                onMouseOver={(e) => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 12px 20px rgba(139, 90, 43, 0.1)"; }}
-                onMouseOut={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 6px rgba(139, 90, 43, 0.05)"; }}
+                className="snap-start shrink-0 w-[140px] md:w-[170px] flex flex-col no-underline bg-l3-card p-3 md:p-4 rounded-2xl border border-l3-border shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_20px_rgba(139,90,43,0.1)] cursor-pointer group"
               >
-                <div style={{
-                  width: "100%",
-                  aspectRatio: "2/3",
-                  borderRadius: "0.5rem",
-                  overflow: "hidden",
-                  backgroundColor: "#f5ebe0",
-                  border: "1px solid #e0d1c3",
-                  marginBottom: "0.75rem",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}>
+                <div className="w-full aspect-[2/3] rounded-xl overflow-hidden bg-l3-bg border border-l3-border mb-3 flex items-center justify-center relative">
                   {coverUrl ? (
                     <img
                       src={coverUrl}
                       alt={story.title}
-                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
-                    <span style={{ fontSize: "11px", color: "#a89f91", textAlign: "center", padding: "0.5rem" }}>
+                    <span className="text-[10px] md:text-xs text-l3-muted text-center p-2 font-medium">
                       #{story.id}<br/>Historia
                     </span>
                   )}
+                  {/* Subtle overlay on hover */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300"></div>
                 </div>
 
-                <h3 style={{ 
-                  margin: "0 0 0.5rem 0", 
-                  fontSize: "1rem", 
-                  color: "#3b2f2a", 
-                  fontWeight: "700",
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  lineHeight: "1.2",
-                  height: "2.4rem"
-                }}>
+                <h3 className="m-0 mb-2 text-sm md:text-base text-l3-paper font-bold line-clamp-2 leading-tight h-[2.4em] md:h-[2.8em]">
                   {story.title}
                 </h3>
 
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.25rem", marginBottom: "0.5rem", height: "2rem", overflow: "hidden" }}>
+                <div className="flex flex-wrap gap-1 mb-2 h-7 overflow-hidden">
                   {story.genres?.slice(0, 2).map((genre) => (
                     <span
                       key={genre.id}
-                      style={{
-                        padding: "0.15rem 0.4rem",
-                        fontSize: "0.65rem",
-                        border: "1px solid #e0d1c3",
-                        borderRadius: "1rem",
-                        backgroundColor: "rgba(217,160,91,0.05)",
-                        color: "#8b5a2b",
-                        fontWeight: "600",
-                        whiteSpace: "nowrap"
-                      }}
+                      className="px-2 py-0.5 text-[0.6rem] md:text-xs border border-l3-border rounded-full bg-l3-gold/10 text-l3-brown font-bold whitespace-nowrap"
                     >
                       {genre.name}
                     </span>
                   ))}
                   {(!story.genres || story.genres.length === 0) && (
-                    <span style={{ padding: "0.15rem 0.4rem", fontSize: "0.65rem", border: "1px solid #e0d1c3", borderRadius: "1rem", color: "#a89f91", fontStyle: "italic" }}>
+                    <span className="px-2 py-0.5 text-[0.6rem] md:text-xs border border-l3-border rounded-full text-l3-muted italic whitespace-nowrap">
                       General
                     </span>
                   )}
                 </div>
 
-                <div style={{ marginTop: "auto", fontSize: "0.75rem", color: "#7b6f67", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontWeight: "600", overflow: "hidden", textOverflow: "ellipsis" }}>{story.author?.name || story.author?.username || "Autor anónimo"}</span>
+                <div className="mt-auto text-[0.7rem] md:text-xs text-l3-muted whitespace-nowrap overflow-hidden flex justify-between items-center">
+                  <span className="font-semibold truncate">{story.author?.name || story.author?.username || "Autor anónimo"}</span>
                 </div>
               </Link>
             );
           })}
         </div>
 
-        {/* CONTROLES DEL CARRUSEL (Estilo flechas flotantes / botones de biblioteca) */}
+        {/* CONTROLES DEL CARRUSEL (Ocultos en móvil porque se usa el scroll táctil) */}
         {stories.length > 5 && (
-          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "1.5rem", marginTop: "1.5rem", paddingBottom: "1rem" }}>
+          <div className="hidden md:flex justify-center items-center gap-6 mt-6 pb-4">
             <button
               type="button"
               onClick={() => scrollCarousel(-1)}
-              style={{
-                width: "48px", height: "48px",
-                borderRadius: "50%",
-                border: "2px solid #e0d1c3",
-                backgroundColor: "#fff7ec",
-                boxShadow: "0 4px 6px rgba(139, 90, 43, 0.05)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                cursor: "pointer",
-                transition: "all 0.2s"
-              }}
-              onMouseOver={(e) => { e.currentTarget.style.backgroundColor = "#d9a05b"; e.currentTarget.style.borderColor = "#d9a05b"; e.currentTarget.querySelector('svg').style.stroke = "#fff7ec"; }}
-              onMouseOut={(e) => { e.currentTarget.style.backgroundColor = "#fff7ec"; e.currentTarget.style.borderColor = "#e0d1c3"; e.currentTarget.querySelector('svg').style.stroke = "#8b5a2b"; }}
+              className="w-12 h-12 rounded-full border-2 border-l3-border bg-l3-card shadow-sm flex items-center justify-center cursor-pointer transition-all duration-300 hover:bg-l3-gold hover:border-l3-gold group"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8b5a2b" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "stroke 0.2s" }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-l3-brown group-hover:text-l3-card transition-colors">
                 <polyline points="15 18 9 12 15 6" />
               </svg>
             </button>
 
-            <div style={{ height: "1px", width: "80px", backgroundColor: "#e0d1c3" }}></div>
+            <div className="h-px w-20 bg-l3-border"></div>
 
             <button
               type="button"
               onClick={() => scrollCarousel(1)}
-              style={{
-                width: "48px", height: "48px",
-                borderRadius: "50%",
-                border: "2px solid #e0d1c3",
-                backgroundColor: "#fff7ec",
-                boxShadow: "0 4px 6px rgba(139, 90, 43, 0.05)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                cursor: "pointer",
-                transition: "all 0.2s"
-              }}
-              onMouseOver={(e) => { e.currentTarget.style.backgroundColor = "#d9a05b"; e.currentTarget.style.borderColor = "#d9a05b"; e.currentTarget.querySelector('svg').style.stroke = "#fff7ec"; }}
-              onMouseOut={(e) => { e.currentTarget.style.backgroundColor = "#fff7ec"; e.currentTarget.style.borderColor = "#e0d1c3"; e.currentTarget.querySelector('svg').style.stroke = "#8b5a2b"; }}
+              className="w-12 h-12 rounded-full border-2 border-l3-border bg-l3-card shadow-sm flex items-center justify-center cursor-pointer transition-all duration-300 hover:bg-l3-gold hover:border-l3-gold group"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8b5a2b" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "stroke 0.2s" }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-l3-brown group-hover:text-l3-card transition-colors">
                 <polyline points="9 18 15 12 9 6" />
               </svg>
             </button>

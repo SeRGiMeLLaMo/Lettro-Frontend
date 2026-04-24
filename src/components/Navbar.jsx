@@ -61,37 +61,31 @@ export default function Navbar() {
           z-index: 999;
           display: flex;
           flex-direction: column;
-          padding: 1.5rem;
+          padding: 2rem 1.5rem;
           gap: 0.5rem;
           transform: translateX(100%);
           transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
           border-top: 1px solid #e0d1c3;
           overflow-y: auto;
           box-shadow: -10px 0 30px rgba(139, 90, 43, 0.05);
+          text-align: center;
         }
         .mobile-overlay.open {
           transform: translateX(0);
         }
         .mobile-link {
-          font-size: 1.1rem;
+          font-size: 1.2rem;
           color: #3b2f2a;
           text-decoration: none;
           font-weight: 600;
-          padding: 1rem 0.5rem;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
+          padding: 1.2rem 0.5rem;
+          display: block;
           border-bottom: 1px solid rgba(224, 209, 195, 0.4);
           transition: all 0.2s;
         }
         .mobile-link:active {
           background-color: rgba(217, 160, 91, 0.05);
           color: #d9a05b;
-        }
-        .mobile-link-arrow {
-          color: #d9a05b;
-          opacity: 0.5;
-          font-size: 1.2rem;
         }
       `}</style>
 
@@ -269,18 +263,9 @@ export default function Navbar() {
       {/* OVERLAY DEL MENÚ MÓVIL */}
       <div className={`mobile-overlay ${isMenuOpen ? "open" : ""}`} onClick={() => setIsMenuOpen(false)}>
         <div style={{ display: "flex", flexDirection: "column", marginBottom: "2rem" }}>
-          <NavLink to="/" className="mobile-link" end>
-            <span>Inicio</span>
-            <span className="mobile-link-arrow">›</span>
-          </NavLink>
-          <NavLink to="/search" className="mobile-link">
-            <span>Explorar libros</span>
-            <span className="mobile-link-arrow">›</span>
-          </NavLink>
-          <NavLink to={user ? `/profile/${user.id}` : "/login"} className="mobile-link">
-            <span>Mi estantería</span>
-            <span className="mobile-link-arrow">›</span>
-          </NavLink>
+          <NavLink to="/" className="mobile-link" end>Inicio</NavLink>
+          <NavLink to="/search" className="mobile-link">Explorar libros</NavLink>
+          <NavLink to={user ? `/profile/${user.id}` : "/login"} className="mobile-link">Mi estantería</NavLink>
         </div>
         
         <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "1rem", paddingBottom: "2rem" }}>

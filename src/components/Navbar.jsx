@@ -147,6 +147,11 @@ export default function Navbar() {
           <NavLink to="/search" style={navLinkStyle}>
             Explorar libros
           </NavLink>
+          {user && (
+            <NavLink to="/saved-stories" style={navLinkStyle}>
+              Mis Guardados
+            </NavLink>
+          )}
           <NavLink to={user ? `/profile/${user.id}` : "/login"} style={navLinkStyle}>
             Mi estantería
           </NavLink>
@@ -266,6 +271,7 @@ export default function Navbar() {
         <div style={{ display: "flex", flexDirection: "column", marginBottom: "2rem", width: "100%" }}>
           <NavLink to="/" className="mobile-link" end>Inicio</NavLink>
           <NavLink to="/search" className="mobile-link">Explorar libros</NavLink>
+          {user && <NavLink to="/saved-stories" className="mobile-link">Mis Guardados</NavLink>}
           <NavLink to={user ? `/profile/${user.id}` : "/login"} className="mobile-link">Mi estantería</NavLink>
         </div>
         

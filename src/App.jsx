@@ -12,6 +12,7 @@ import Register from "./pages/profileloginregister/Register";
 import CreateChapter from "./pages/chapter/CreateChapter";
 import EditChapter from "./pages/chapter/EditChapter";
 import ChapterView from "./pages/chapter/ChapterView";
+import SavedStories from "./pages/SavedStories";
 import { Toaster } from "react-hot-toast";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
@@ -58,7 +59,8 @@ export default function App() {
         <Route path="/stories/:id/edit" element={<EditStory />} />
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/profile/:id" element={<Profile />} />
-<Route path="/login" element={<Login />} />
+        <Route path="/saved-stories" element={<SavedStories />} />
+        <Route path="/login" element={<Login />} />
 <Route path="/register" element={<Register />} />
 <Route path="/stories/:id/new-chapter" element={<CreateChapter />} />
         <Route path="/stories/:storyId/chapters/:chapterId/edit" element={<EditChapter />} />

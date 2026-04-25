@@ -227,7 +227,7 @@ export default function Story() {
                       transition: "all 0.2s"
                     }}
                   >
-                    {liked ? "♥ Siguiendo" : "♡ Me gusta"}
+                    {liked ? "♥ Guardado" : "♡ Me gusta"}
                   </button>
                   <button 
                     onClick={handleToggleFollow}

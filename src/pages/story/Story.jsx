@@ -22,11 +22,15 @@ export default function Story() {
     const fetchStory = async () => {
       try {
         const response = await axios.get(`${API_BASE}/stories/${id}`, {
-          headers: { Accept: "application/json" },
+          headers: { 
+            Accept: "application/json",
+            Authorization: token ? `Bearer ${token}` : ""
+          },
         });
         const s = response.data;
         setStory(s);
         setLikesCount(s.likes_count || 0);
+        setLiked(!!s.liked);
       } catch (err) {
         console.error(err);
         setError("No se pudo cargar la historia.");

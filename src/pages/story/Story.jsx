@@ -39,7 +39,7 @@ export default function Story() {
       }
     };
     fetchStory();
-  }, [id, API_BASE]);
+  }, [id, API_BASE, token]);
 
   useEffect(() => {
     const authorId = story?.author?.id;

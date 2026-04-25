@@ -32,7 +32,7 @@ export default function SavedStories() {
     // Cargar historias guardadas
     const fetchSaved = async () => {
       try {
-        const res = await axios.get(`${API_BASE}/me/liked-stories`, {
+        const res = await axios.get(`${API_BASE}/me/saved`, {
           headers: { 
             Accept: "application/json",
             Authorization: `Bearer ${token}`

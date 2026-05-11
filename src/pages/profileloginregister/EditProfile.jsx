@@ -43,7 +43,18 @@ export default function EditProfile() {
           photo: null,
         });
         if (data.photo) {
-          const photoUrl = data.photo.startsWith("http") ? data.photo : `${STORAGE_URL}/${data.photo}`;
+          console.log("DEBUG - Photo data from server:", data.photo);
+          console.log("DEBUG - STORAGE_URL calculated:", STORAGE_URL);
+          
+          let photoUrl = data.photo;
+          if (!photoUrl.startsWith("http")) {
+            // Eliminar posibles barras duplicadas
+            const cleanStorageUrl = STORAGE_URL.endsWith("/") ? STORAGE_URL.slice(0, -1) : STORAGE_URL;
+            const cleanPhotoPath = data.photo.startsWith("/") ? data.photo.slice(1) : data.photo;
+            photoUrl = `${cleanStorageUrl}/${cleanPhotoPath}`;
+          }
+          
+          console.log("DEBUG - Final Photo URL:", photoUrl);
           setPreview(photoUrl);
         }
       } catch (error) {

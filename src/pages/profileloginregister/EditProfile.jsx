@@ -43,7 +43,8 @@ export default function EditProfile() {
           photo: null,
         });
         if (data.photo) {
-          setPreview(`${STORAGE_URL}/${data.photo}`);
+          const photoUrl = data.photo.startsWith("http") ? data.photo : `${STORAGE_URL}/${data.photo}`;
+          setPreview(photoUrl);
         }
       } catch (error) {
         console.error(error);

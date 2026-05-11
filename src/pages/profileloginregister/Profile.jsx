@@ -138,18 +138,37 @@ function Profile() {
               background: "linear-gradient(45deg, #d9a05b, #e0d1c3)",
               display: "flex", alignItems: "center", justifyContent: "center"
             }}>
-              <img
-                src={user.photo ? (user.photo.startsWith("http") ? user.photo : `${STORAGE_URL}/${user.photo}`) : "/perfilpredeterminado.png"}
-                alt="Foto perfil"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                  border: "3px solid #fff7ec",
-                  backgroundColor: "#fff7ec"
-                }}
-              />
+              {(() => {
+                let photoUrl = "/perfilpredeterminado.png";
+                if (user.photo) {
+                  console.log("DEBUG PROFILE - Photo data:", user.photo);
+                  photoUrl = user.photo;
+                  if (!photoUrl.startsWith("http")) {
+                    const cleanStorageUrl = STORAGE_URL.endsWith("/") ? STORAGE_URL.slice(0, -1) : STORAGE_URL;
+                    const cleanPhotoPath = user.photo.startsWith("/") ? user.photo.slice(1) : user.photo;
+                    photoUrl = `${cleanStorageUrl}/${cleanPhotoPath}`;
+                  }
+                  console.log("DEBUG PROFILE - Final URL:", photoUrl);
+                }
+                return (
+                  <img
+                    src={photoUrl}
+                    alt="Foto perfil"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      border: "3px solid #fff7ec",
+                      backgroundColor: "#fff7ec"
+                    }}
+                    onError={(e) => {
+                      console.error("DEBUG PROFILE - Error loading image:", photoUrl);
+                      e.target.src = "/perfilpredeterminado.png";
+                    }}
+                  />
+                );
+              })()}
             </div>
           </div>
 

@@ -189,13 +189,33 @@ export default function Navbar() {
                   boxShadow: "0 4px 10px rgba(217,160,91,0.15)",
                   backgroundColor: "#fff"
                 }}>
-                  {user.photo ? (
-                    <img src={user.photo.startsWith("http") ? user.photo : `${STORAGE_URL}/${user.photo}`} alt="P" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  ) : (
-                    <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#d9a05b", fontWeight: "bold", backgroundColor: "#f5ebe0" }}>
-                      {user.username?.charAt(0).toUpperCase()}
-                    </div>
-                  )}
+                  {(() => {
+                    let photoUrl = "";
+                    if (user.photo) {
+                      photoUrl = user.photo;
+                      if (!photoUrl.startsWith("http")) {
+                        const cleanStorageUrl = STORAGE_URL.endsWith("/") ? STORAGE_URL.slice(0, -1) : STORAGE_URL;
+                        const cleanPhotoPath = user.photo.startsWith("/") ? user.photo.slice(1) : user.photo;
+                        photoUrl = `${cleanStorageUrl}/${cleanPhotoPath}`;
+                      }
+                    }
+                    return user.photo ? (
+                      <img 
+                        src={photoUrl} 
+                        alt="P" 
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                        onError={(e) => {
+                          console.error("NAVBAR - Error loading image:", photoUrl);
+                          e.target.style.display = 'none';
+                          e.target.parentNode.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#d9a05b;fontWeight:bold;backgroundColor:#f5ebe0">${user.username?.charAt(0).toUpperCase()}</div>`;
+                        }}
+                      />
+                    ) : (
+                      <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#d9a05b", fontWeight: "bold", backgroundColor: "#f5ebe0" }}>
+                        {user.username?.charAt(0).toUpperCase()}
+                      </div>
+                    );
+                  })()}
                 </div>
               </Link>
               <button

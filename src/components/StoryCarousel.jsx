@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 
 export default function StoryCarousel({ title, description, stories }) {
   const carouselRef = useRef(null);
-  const STORAGE_URL = (import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api").replace("/api", "/storage");
+  const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+  const STORAGE_URL = API_BASE.replace("/api", "/storage");
 
   const scrollCarousel = (direction) => {
     const el = carouselRef.current;

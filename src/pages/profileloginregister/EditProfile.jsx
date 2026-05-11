@@ -8,6 +8,7 @@ export default function EditProfile() {
   const navigate = useNavigate();
   const { user, token, setUser } = useAuth();
   const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+  const STORAGE_URL = API_BASE.replace("/api", "/storage");
 
   const [form, setForm] = useState({
     name: "",
@@ -42,7 +43,7 @@ export default function EditProfile() {
           photo: null,
         });
         if (data.photo) {
-          setPreview(`http://127.0.0.1:8000/storage/${data.photo}`);
+          setPreview(`${STORAGE_URL}/${data.photo}`);
         }
       } catch (error) {
         console.error(error);

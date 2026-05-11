@@ -16,9 +16,7 @@ export default function Register() {
   });
   const [status, setStatus] = useState({ loading: false, error: "", success: "" });
 
-  const API_BASE =
-    import.meta.env.VITE_API_URL ||
-    "http://127.0.0.1:8000/api";
+  const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
 
   const handleChange = (e) => {
     const { name, value } = e.target;

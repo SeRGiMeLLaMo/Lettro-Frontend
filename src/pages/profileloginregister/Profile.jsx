@@ -145,9 +145,7 @@ function Profile() {
               background: "linear-gradient(45deg, #d9a05b, #e0d1c3)",
               display: "flex", alignItems: "center", justifyContent: "center"
             }}>
-              background: "linear-gradient(45deg, #d9a05b, #e0d1c3)",
-              display: "flex", alignItems: "center", justifyContent: "center"
-            }}>
+
               {!imgError ? (
                 <img
                   src={photoUrl}

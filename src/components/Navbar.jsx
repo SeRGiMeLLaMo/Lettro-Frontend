@@ -196,19 +196,30 @@ export default function Navbar() {
                       if (!photoUrl.startsWith("http")) {
                         const cleanStorageUrl = STORAGE_URL.endsWith("/") ? STORAGE_URL.slice(0, -1) : STORAGE_URL;
                         const cleanPhotoPath = user.photo.startsWith("/") ? user.photo.slice(1) : user.photo;
-                        photoUrl = `${cleanStorageUrl}/${cleanPhotoPath}`;
+                        photoUrl = `${cleanStorageUrl}/${cleanPhotoPath}?t=${new Date().getTime()}`;
                       }
                     }
+
+                    const handleImageError = (e) => {
+                      // Si la foto local falla y tenemos foto de google, la usamos
+                      if (user.google_photo && e.target.src !== user.google_photo) {
+                        console.log("NAVBAR - Falling back to Google Photo");
+                        e.target.src = user.google_photo;
+                      } else {
+                        // Si no hay más opciones, mostramos la inicial
+                        console.error("NAVBAR - All image sources failed");
+                        e.target.style.display = 'none';
+                        const initial = user.username?.charAt(0).toUpperCase() || "U";
+                        e.target.parentNode.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#d9a05b;fontWeight:bold;backgroundColor:#f5ebe0">${initial}</div>`;
+                      }
+                    };
+
                     return user.photo ? (
                       <img 
                         src={photoUrl} 
                         alt="P" 
                         style={{ width: "100%", height: "100%", objectFit: "cover" }} 
-                        onError={(e) => {
-                          console.error("NAVBAR - Error loading image:", photoUrl);
-                          e.target.style.display = 'none';
-                          e.target.parentNode.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#d9a05b;fontWeight:bold;backgroundColor:#f5ebe0">${user.username?.charAt(0).toUpperCase()}</div>`;
-                        }}
+                        onError={handleImageError}
                       />
                     ) : (
                       <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#d9a05b", fontWeight: "bold", backgroundColor: "#f5ebe0" }}>

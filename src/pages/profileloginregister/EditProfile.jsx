@@ -43,19 +43,16 @@ export default function EditProfile() {
           photo: null,
         });
         if (data.photo) {
-          console.log("DEBUG - Photo data from server:", data.photo);
-          console.log("DEBUG - STORAGE_URL calculated:", STORAGE_URL);
-          
           let photoUrl = data.photo;
           if (!photoUrl.startsWith("http")) {
-            // Eliminar posibles barras duplicadas
             const cleanStorageUrl = STORAGE_URL.endsWith("/") ? STORAGE_URL.slice(0, -1) : STORAGE_URL;
             const cleanPhotoPath = data.photo.startsWith("/") ? data.photo.slice(1) : data.photo;
             photoUrl = `${cleanStorageUrl}/${cleanPhotoPath}`;
           }
-          
-          console.log("DEBUG - Final Photo URL:", photoUrl);
           setPreview(photoUrl);
+        } else if (data.google_photo) {
+          // Si no hay foto subida, usamos la de Google como preview inicial
+          setPreview(data.google_photo);
         }
       } catch (error) {
         console.error(error);
@@ -215,7 +212,16 @@ export default function EditProfile() {
                   boxShadow: "0 10px 25px rgba(217,160,91,0.2)"
                 }}>
                 {preview ? (
-                  <img src={preview} alt="Vista previa" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <img 
+                    src={preview} 
+                    alt="Vista previa" 
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                    onError={(e) => {
+                      if (user?.google_photo && e.target.src !== user.google_photo) {
+                        e.target.src = user.google_photo;
+                      }
+                    }}
+                  />
                 ) : (
                   <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#7b6f67", fontSize: "0.7rem", textAlign: "center" }}>
                     Sin foto

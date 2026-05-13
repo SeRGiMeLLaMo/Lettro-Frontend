@@ -146,10 +146,20 @@ function Profile() {
                   if (!photoUrl.startsWith("http")) {
                     const cleanStorageUrl = STORAGE_URL.endsWith("/") ? STORAGE_URL.slice(0, -1) : STORAGE_URL;
                     const cleanPhotoPath = user.photo.startsWith("/") ? user.photo.slice(1) : user.photo;
-                    photoUrl = `${cleanStorageUrl}/${cleanPhotoPath}`;
+                    photoUrl = `${cleanStorageUrl}/${cleanPhotoPath}?t=${new Date().getTime()}`;
                   }
                   console.log("DEBUG PROFILE - Final URL:", photoUrl);
                 }
+                const handleImageError = (e) => {
+                  if (user.google_photo && e.target.src !== user.google_photo) {
+                    console.log("PROFILE - Falling back to Google Photo");
+                    e.target.src = user.google_photo;
+                  } else {
+                    console.error("PROFILE - All image sources failed");
+                    e.target.src = "/perfilpredeterminado.png";
+                  }
+                };
+
                 return (
                   <img
                     src={photoUrl}
@@ -162,10 +172,7 @@ function Profile() {
                       border: "3px solid #fff7ec",
                       backgroundColor: "#fff7ec"
                     }}
-                    onError={(e) => {
-                      console.error("DEBUG PROFILE - Error loading image:", photoUrl);
-                      e.target.src = "/perfilpredeterminado.png";
-                    }}
+                    onError={handleImageError}
                   />
                 );
               })()}

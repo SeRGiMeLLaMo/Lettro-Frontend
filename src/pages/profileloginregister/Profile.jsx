@@ -138,44 +138,82 @@ function Profile() {
               background: "linear-gradient(45deg, #d9a05b, #e0d1c3)",
               display: "flex", alignItems: "center", justifyContent: "center"
             }}>
-              {(() => {
-                let photoUrl = "/perfilpredeterminado.png";
-                if (user.photo) {
-                  console.log("DEBUG PROFILE - Photo data:", user.photo);
-                  photoUrl = user.photo;
-                  if (!photoUrl.startsWith("http")) {
-                    const cleanStorageUrl = STORAGE_URL.endsWith("/") ? STORAGE_URL.slice(0, -1) : STORAGE_URL;
-                    const cleanPhotoPath = user.photo.startsWith("/") ? user.photo.slice(1) : user.photo;
-                    photoUrl = `${cleanStorageUrl}/${cleanPhotoPath}?t=${new Date().getTime()}`;
-                  }
-                  console.log("DEBUG PROFILE - Final URL:", photoUrl);
-                }
-                const handleImageError = (e) => {
-                  if (user.google_photo && e.target.src !== user.google_photo) {
-                    console.log("PROFILE - Falling back to Google Photo");
-                    e.target.src = user.google_photo;
-                  } else {
-                    console.error("PROFILE - All image sources failed");
-                    e.target.src = "/perfilpredeterminado.png";
-                  }
-                };
+  const [imgError, setImgError] = useState(false);
+  const [useGoogleFallback, setUseGoogleFallback] = useState(false);
 
-                return (
-                  <img
-                    src={photoUrl}
-                    alt="Foto perfil"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                      border: "3px solid #fff7ec",
-                      backgroundColor: "#fff7ec"
-                    }}
-                    onError={handleImageError}
-                  />
-                );
-              })()}
+  useEffect(() => {
+    setImgError(false);
+    setUseGoogleFallback(false);
+  }, [id]);
+
+  const handleImageError = () => {
+    if (user?.google_photo && !useGoogleFallback) {
+      console.log("PROFILE - Falling back to Google Photo");
+      setUseGoogleFallback(true);
+    } else {
+      console.error("PROFILE - All image sources failed");
+      setImgError(true);
+    }
+  };
+
+  let photoUrl = "/perfilpredeterminado.png";
+  if (user?.photo) {
+    if (useGoogleFallback) {
+      photoUrl = user.google_photo;
+    } else {
+      photoUrl = user.photo;
+      if (!photoUrl.startsWith("http")) {
+        const cleanStorageUrl = STORAGE_URL.endsWith("/") ? STORAGE_URL.slice(0, -1) : STORAGE_URL;
+        const cleanPhotoPath = user.photo.startsWith("/") ? user.photo.slice(1) : user.photo;
+        photoUrl = `${cleanStorageUrl}/${cleanPhotoPath}?t=${new Date().getTime()}`;
+      }
+    }
+  }
+
+  return (
+    <div style={{ backgroundColor: "#f5ebe0", minHeight: "calc(100vh - 80px)", padding: "2rem 1rem", fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
+      <div style={{ maxWidth: "800px", margin: "0 auto", backgroundColor: "#fff7ec", border: "1px solid #e0d1c3", borderRadius: "1.5rem", padding: "2.5rem 2rem", boxShadow: "0 20px 40px rgba(139, 90, 43, 0.05)" }}>
+        
+        {/* HEADER TIPO INSTAGRAM */}
+        <div style={{ display: "flex", gap: "2rem", alignItems: "flex-start", marginBottom: "2rem" }}>
+          
+          {/* FOTO (Izquierda) */}
+          <div style={{ flexShrink: 0 }}>
+            <div style={{
+              width: "120px", height: "120px", 
+              borderRadius: "50%", 
+              padding: "4px",
+              background: "linear-gradient(45deg, #d9a05b, #e0d1c3)",
+              display: "flex", alignItems: "center", justifyContent: "center"
+            }}>
+              {!imgError ? (
+                <img
+                  src={photoUrl}
+                  alt="Foto perfil"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    border: "3px solid #fff7ec",
+                    backgroundColor: "#fff7ec"
+                  }}
+                  onError={handleImageError}
+                />
+              ) : (
+                <img
+                  src="/perfilpredeterminado.png"
+                  alt="Default"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    border: "3px solid #fff7ec",
+                    backgroundColor: "#fff7ec"
+                  }}
+                />
+              )}
             </div>
           </div>
 

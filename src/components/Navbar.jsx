@@ -6,6 +6,8 @@ export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [imgError, setImgError] = useState(false);
+  const [useGoogleFallback, setUseGoogleFallback] = useState(false);
   const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
   const STORAGE_URL = API_BASE.replace("/api", "/storage");
 
@@ -21,8 +23,39 @@ export default function Navbar() {
     alignItems: "center"
   });
 
+  // Resetear estados cuando cambie el usuario
+  useState(() => {
+    setImgError(false);
+    setUseGoogleFallback(false);
+  }, [user?.id]);
+
+  const handleImageError = () => {
+    if (user?.google_photo && !useGoogleFallback) {
+      console.log("NAVBAR - Falling back to Google Photo");
+      setUseGoogleFallback(true);
+    } else {
+      console.error("NAVBAR - All image sources failed");
+      setImgError(true);
+    }
+  };
+
+  let photoUrl = "";
+  if (user?.photo) {
+    if (useGoogleFallback) {
+      photoUrl = user.google_photo;
+    } else {
+      photoUrl = user.photo;
+      if (!photoUrl.startsWith("http")) {
+        const cleanStorageUrl = STORAGE_URL.endsWith("/") ? STORAGE_URL.slice(0, -1) : STORAGE_URL;
+        const cleanPhotoPath = user.photo.startsWith("/") ? user.photo.slice(1) : user.photo;
+        photoUrl = `${cleanStorageUrl}/${cleanPhotoPath}?t=${new Date().getTime()}`;
+      }
+    }
+  }
+
   return (
     <>
+      {/* ... (estilos existentes) ... */}
       <style>{`
         /* RESPONSIVE OVERRIDES - Solo se activan en pantallas pequeñas */
         @media (max-width: 1024px) {
@@ -189,44 +222,18 @@ export default function Navbar() {
                   boxShadow: "0 4px 10px rgba(217,160,91,0.15)",
                   backgroundColor: "#fff"
                 }}>
-                  {(() => {
-                    let photoUrl = "";
-                    if (user.photo) {
-                      photoUrl = user.photo;
-                      if (!photoUrl.startsWith("http")) {
-                        const cleanStorageUrl = STORAGE_URL.endsWith("/") ? STORAGE_URL.slice(0, -1) : STORAGE_URL;
-                        const cleanPhotoPath = user.photo.startsWith("/") ? user.photo.slice(1) : user.photo;
-                        photoUrl = `${cleanStorageUrl}/${cleanPhotoPath}?t=${new Date().getTime()}`;
-                      }
-                    }
-
-                    const handleImageError = (e) => {
-                      // Si la foto local falla y tenemos foto de google, la usamos
-                      if (user.google_photo && e.target.src !== user.google_photo) {
-                        console.log("NAVBAR - Falling back to Google Photo");
-                        e.target.src = user.google_photo;
-                      } else {
-                        // Si no hay más opciones, mostramos la inicial
-                        console.error("NAVBAR - All image sources failed");
-                        e.target.style.display = 'none';
-                        const initial = user.username?.charAt(0).toUpperCase() || "U";
-                        e.target.parentNode.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#d9a05b;fontWeight:bold;backgroundColor:#f5ebe0">${initial}</div>`;
-                      }
-                    };
-
-                    return user.photo ? (
-                      <img 
-                        src={photoUrl} 
-                        alt="P" 
-                        style={{ width: "100%", height: "100%", objectFit: "cover" }} 
-                        onError={handleImageError}
-                      />
-                    ) : (
-                      <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#d9a05b", fontWeight: "bold", backgroundColor: "#f5ebe0" }}>
-                        {user.username?.charAt(0).toUpperCase()}
-                      </div>
-                    );
-                  })()}
+                  {!imgError && photoUrl ? (
+                    <img 
+                      src={photoUrl} 
+                      alt="P" 
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                      onError={handleImageError}
+                    />
+                  ) : (
+                    <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#d9a05b", fontWeight: "bold", backgroundColor: "#f5ebe0" }}>
+                      {user.username?.charAt(0).toUpperCase() || "U"}
+                    </div>
+                  )}
                 </div>
               </Link>
               <button

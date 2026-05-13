@@ -12,9 +12,16 @@ function Profile() {
   const [user, setUser] = useState(null);
   const [following, setFollowing] = useState(false);
   const [expandedStoryId, setExpandedStoryId] = useState(null);
+  const [imgError, setImgError] = useState(false);
+  const [useGoogleFallback, setUseGoogleFallback] = useState(false);
 
   const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
   const STORAGE_URL = API_BASE.replace("/api", "/storage");
+
+  useEffect(() => {
+    setImgError(false);
+    setUseGoogleFallback(false);
+  }, [id]);
 
   useEffect(() => {
     axios
@@ -138,51 +145,6 @@ function Profile() {
               background: "linear-gradient(45deg, #d9a05b, #e0d1c3)",
               display: "flex", alignItems: "center", justifyContent: "center"
             }}>
-  const [imgError, setImgError] = useState(false);
-  const [useGoogleFallback, setUseGoogleFallback] = useState(false);
-
-  useEffect(() => {
-    setImgError(false);
-    setUseGoogleFallback(false);
-  }, [id]);
-
-  const handleImageError = () => {
-    if (user?.google_photo && !useGoogleFallback) {
-      console.log("PROFILE - Falling back to Google Photo");
-      setUseGoogleFallback(true);
-    } else {
-      console.error("PROFILE - All image sources failed");
-      setImgError(true);
-    }
-  };
-
-  let photoUrl = "/perfilpredeterminado.png";
-  if (user?.photo) {
-    if (useGoogleFallback) {
-      photoUrl = user.google_photo;
-    } else {
-      photoUrl = user.photo;
-      if (!photoUrl.startsWith("http")) {
-        const cleanStorageUrl = STORAGE_URL.endsWith("/") ? STORAGE_URL.slice(0, -1) : STORAGE_URL;
-        const cleanPhotoPath = user.photo.startsWith("/") ? user.photo.slice(1) : user.photo;
-        photoUrl = `${cleanStorageUrl}/${cleanPhotoPath}?t=${new Date().getTime()}`;
-      }
-    }
-  }
-
-  return (
-    <div style={{ backgroundColor: "#f5ebe0", minHeight: "calc(100vh - 80px)", padding: "2rem 1rem", fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
-      <div style={{ maxWidth: "800px", margin: "0 auto", backgroundColor: "#fff7ec", border: "1px solid #e0d1c3", borderRadius: "1.5rem", padding: "2.5rem 2rem", boxShadow: "0 20px 40px rgba(139, 90, 43, 0.05)" }}>
-        
-        {/* HEADER TIPO INSTAGRAM */}
-        <div style={{ display: "flex", gap: "2rem", alignItems: "flex-start", marginBottom: "2rem" }}>
-          
-          {/* FOTO (Izquierda) */}
-          <div style={{ flexShrink: 0 }}>
-            <div style={{
-              width: "120px", height: "120px", 
-              borderRadius: "50%", 
-              padding: "4px",
               background: "linear-gradient(45deg, #d9a05b, #e0d1c3)",
               display: "flex", alignItems: "center", justifyContent: "center"
             }}>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.js";
 
@@ -24,7 +24,7 @@ export default function Navbar() {
   });
 
   // Resetear estados cuando cambie el usuario
-  useState(() => {
+  useEffect(() => {
     setImgError(false);
     setUseGoogleFallback(false);
   }, [user?.id]);

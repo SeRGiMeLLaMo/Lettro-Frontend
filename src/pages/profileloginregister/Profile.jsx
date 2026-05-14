@@ -17,6 +17,35 @@ function Profile() {
 
   const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
   const STORAGE_URL = API_BASE.replace("/api", "/storage");
+  const handleImageError = () => {
+  if (user?.google_photo && !useGoogleFallback) {
+    setUseGoogleFallback(true);
+  } else {
+    setImgError(true);
+  }
+};
+
+let photoUrl = "";
+
+if (user?.photo) {
+  if (useGoogleFallback) {
+    photoUrl = user.google_photo;
+  } else {
+    photoUrl = user.photo;
+
+    if (!photoUrl.startsWith("http")) {
+      const cleanStorageUrl = STORAGE_URL.endsWith("/")
+        ? STORAGE_URL.slice(0, -1)
+        : STORAGE_URL;
+
+      const cleanPhotoPath = user.photo.startsWith("/")
+        ? user.photo.slice(1)
+        : user.photo;
+
+      photoUrl = `${cleanStorageUrl}/${cleanPhotoPath}?t=${Date.now()}`;
+    }
+  }
+}
 
   useEffect(() => {
     setImgError(false);
@@ -146,34 +175,34 @@ function Profile() {
               display: "flex", alignItems: "center", justifyContent: "center"
             }}>
 
-              {!imgError ? (
-                <img
-                  src={photoUrl}
-                  alt="Foto perfil"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                    border: "3px solid #fff7ec",
-                    backgroundColor: "#fff7ec"
-                  }}
-                  onError={handleImageError}
-                />
-              ) : (
-                <img
-                  src="/perfilpredeterminado.png"
-                  alt="Default"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                    border: "3px solid #fff7ec",
-                    backgroundColor: "#fff7ec"
-                  }}
-                />
-              )}
+              {!imgError && photoUrl ? (
+              <img
+                src={photoUrl}
+                alt="Foto perfil"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  border: "3px solid #fff7ec",
+                  backgroundColor: "#fff7ec"
+                }}
+                onError={handleImageError}
+              />
+            ) : (
+              <img
+                src="/perfilpredeterminado.png"
+                alt="Default"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  border: "3px solid #fff7ec",
+                  backgroundColor: "#fff7ec"
+                }}
+              />
+            )}
             </div>
           </div>
 
